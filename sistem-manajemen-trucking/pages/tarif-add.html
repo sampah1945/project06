@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Tarif - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Tambah Tarif Baru</h2>
+                    <a href="tarif-list.html" class="btn btn-outline-secondary">
+                        <i class='bx bx-arrow-back'></i> Kembali
+                    </a>
+                </div>
+
+                <!-- Form Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form id="tarifForm" class="needs-validation" novalidate>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Layanan</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="jenisLayanan" class="form-label">Jenis Layanan</label>
+                                    <select class="form-select" id="jenisLayanan" required>
+                                        <option value="">Pilih Jenis Layanan</option>
+                                        <option value="1">Port to Warehouse</option>
+                                        <option value="2">Warehouse to Port</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih jenis layanan
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="jenisKontainer" class="form-label">Jenis Kontainer</label>
+                                    <select class="form-select" id="jenisKontainer" required>
+                                        <option value="">Pilih Jenis Kontainer</option>
+                                        <option value="20ft">20 Feet</option>
+                                        <option value="40ft">40 Feet</option>
+                                        <option value="45ft">45 Feet</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih jenis kontainer
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="asal" class="form-label">Lokasi Asal</label>
+                                    <input type="text" class="form-control" id="asal" placeholder="Masukkan lokasi asal" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan lokasi asal
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="tujuan" class="form-label">Lokasi Tujuan</label>
+                                    <input type="text" class="form-control" id="tujuan" placeholder="Masukkan lokasi tujuan" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan lokasi tujuan
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Harga dan Masa Berlaku</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="harga" class="form-label">Harga (Rp)</label>
+                                    <input type="number" class="form-control" id="harga" placeholder="Masukkan harga" min="0" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan harga
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select class="form-select" id="status" required>
+                                        <option value="aktif" selected>Aktif</option>
+                                        <option value="tidak aktif">Tidak Aktif</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih status
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="masaBerlakuMulai" class="form-label">Masa Berlaku Mulai</label>
+                                    <input type="date" class="form-control" id="masaBerlakuMulai" required>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih tanggal masa berlaku mulai
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="masaBerlakuSelesai" class="form-label">Masa Berlaku Selesai</label>
+                                    <input type="date" class="form-control" id="masaBerlakuSelesai">
+                                    <div class="form-text">Opsional, kosongkan jika tidak ada batas waktu</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button" id="resetButton" class="btn btn-outline-secondary">Reset</button>
+                                <button type="submit" id="submitButton" class="btn btn-primary">
+                                    <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    Simpan Tarif
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Set default dates
+            const today = new Date();
+            document.getElementById('masaBerlakuMulai').value = formatDateInput(today);
+            
+            // Set default next year for masa berlaku selesai
+            const nextYear = new Date();
+            nextYear.setFullYear(nextYear.getFullYear() + 1);
+            nextYear.setDate(nextYear.getDate() - 1); // Subtract 1 day
+            document.getElementById('masaBerlakuSelesai').value = formatDateInput(nextYear);
+            
+            // Reset button handler
+            document.getElementById('resetButton').addEventListener('click', () => {
+                const confirmed = confirm('Apakah Anda yakin ingin mereset formulir?');
+                if (confirmed) {
+                    document.getElementById('tarifForm').reset();
+                    
+                    // Reset to default values
+                    document.getElementById('masaBerlakuMulai').value = formatDateInput(today);
+                    document.getElementById('masaBerlakuSelesai').value = formatDateInput(nextYear);
+                    document.getElementById('status').value = 'aktif';
+                }
+            });
+            
+            // Form submission handler
+            document.getElementById('tarifForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Validasi form
+                const form = e.target;
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+                
+                // Validate that start date is before end date
+                const startDate = new Date(document.getElementById('masaBerlakuMulai').value);
+                const endDate = document.getElementById('masaBerlakuSelesai').value ? 
+                                new Date(document.getElementById('masaBerlakuSelesai').value) : null;
+                
+                if (endDate && startDate >= endDate) {
+                    alert('Masa berlaku mulai harus lebih awal dari masa berlaku selesai');
+                    return;
+                }
+                
+                // Tampilkan spinner dan nonaktifkan tombol
+                const submitButton = document.getElementById('submitButton');
+                const submitSpinner = document.getElementById('submitSpinner');
+                submitButton.disabled = true;
+                submitSpinner.classList.remove('d-none');
+                
+                try {
+                    const tarifData = {
+                        jenis_layanan_id: document.getElementById('jenisLayanan').value,
+                        asal: document.getElementById('asal').value,
+                        tujuan: document.getElementById('tujuan').value,
+                        jenis_kontainer: document.getElementById('jenisKontainer').value,
+                        harga: document.getElementById('harga').value,
+                        masa_berlaku_mulai: document.getElementById('masaBerlakuMulai').value,
+                        masa_berlaku_selesai: document.getElementById('masaBerlakuSelesai').value || null,
+                        status: document.getElementById('status').value
+                    };
+                    
+                    // In a real app, this would be an API call
+                    // Simulate successful API call with timeout
+                    setTimeout(() => {
+                        showAlert('success', 'Tarif berhasil disimpan');
+                        
+                        // Redirect ke halaman daftar tarif setelah 1 detik
+                        setTimeout(() => {
+                            window.location.href = 'tarif-list.html';
+                        }, 1000);
+                    }, 500);
+                } catch (error) {
+                    console.error('Gagal menyimpan tarif:', error);
+                    showAlert('danger', 'Gagal menyimpan tarif');
+                    
+                    // Sembunyikan spinner dan aktifkan tombol kembali
+                    submitButton.disabled = false;
+                    submitSpinner.classList.add('d-none');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

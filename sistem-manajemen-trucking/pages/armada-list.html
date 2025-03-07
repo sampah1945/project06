@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Armada - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Daftar Armada</h2>
+                    <a href="armada-add.html" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Tambah Armada
+                    </a>
+                </div>
+
+                <!-- Data Table Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="armadaTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Kode</th>
+                                        <th>Nomor Polisi</th>
+                                        <th>Jenis Kendaraan</th>
+                                        <th>Merk / Model</th>
+                                        <th>Tahun</th>
+                                        <th>Status</th>
+                                        <th>Terakhir Service</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Armada -->
+    <div class="modal fade" id="detailArmadaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Armada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="text-muted">Informasi Kendaraan</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="35%">Kode Armada</td>
+                                    <td width="5%">:</td>
+                                    <td width="60%" id="detailKode"></td>
+                                </tr>
+                                <tr>
+                                    <td>Nomor Polisi</td>
+                                    <td>:</td>
+                                    <td id="detailNomorPolisi"></td>
+                                </tr>
+                                <tr>
+                                    <td>Jenis Kendaraan</td>
+                                    <td>:</td>
+                                    <td id="detailJenisKendaraan"></td>
+                                </tr>
+                                <tr>
+                                    <td>Merk</td>
+                                    <td>:</td>
+                                    <td id="detailMerk"></td>
+                                </tr>
+                                <tr>
+                                    <td>Model</td>
+                                    <td>:</td>
+                                    <td id="detailModel"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tahun Pembuatan</td>
+                                    <td>:</td>
+                                    <td id="detailTahun"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-muted">Informasi Operasional</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="40%">Kapasitas</td>
+                                    <td width="5%">:</td>
+                                    <td width="55%" id="detailKapasitas"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tanggal Registrasi</td>
+                                    <td>:</td>
+                                    <td id="detailTanggalRegistrasi"></td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>:</td>
+                                    <td id="detailStatus"></td>
+                                </tr>
+                                <tr>
+                                    <td>Terakhir Service</td>
+                                    <td>:</td>
+                                    <td id="detailTerakhirService"></td>
+                                </tr>
+                                <tr>
+                                    <td>Jadwal Service</td>
+                                    <td>:</td>
+                                    <td id="detailJadwalService"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="text-muted">Catatan</h5>
+                            <p id="detailCatatan" class="border-start border-4 border-primary ps-3 py-2 bg-light"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <a href="#" class="btn btn-warning" id="detailEditButton">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load sidebar and navbar
+            $("#sidebar-container").load("../components/sidebar.html", function() {
+                // Aktifkan menu yang sedang aktif
+                const activeMenu = document.querySelector("#sidebar .components li a[href='armada-list.html']");
+                if (activeMenu) {
+                    activeMenu.parentElement.classList.add("active");
+                    const parentCollapse = activeMenu.closest(".collapse");
+                    if (parentCollapse) {
+                        parentCollapse.classList.add("show");
+                        const parentToggle = document.querySelector(`[data-bs-target="#${parentCollapse.id}"]`);
+                        if (parentToggle) {
+                            parentToggle.setAttribute("aria-expanded", "true");
+                        }
+                    }
+                }
+            });
+            
+            $("#navbar-container").load("../components/navbar.html");
+            
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Initialize DataTable
+            const armadaTable = $('#armadaTable').DataTable({
+                responsive: true,
+                order: [[1, 'asc']] // Sort by nomor polisi ascending
+            });
+            
+            // Load armada data
+            try {
+                const armadaData = await window.api.getArmada();
+                
+                armadaData.forEach(armada => {
+                    const actionsHtml = `
+                        <button class="btn btn-sm btn-info me-1 btn-detail" data-id="${armada.id}" title="Detail"><i class='bx bx-detail'></i></button>
+                        <a href="armada-edit.html?id=${armada.id}" class="btn btn-sm btn-warning me-1" title="Edit"><i class='bx bx-edit'></i></a>
+                    `;
+
+                    // Format "Terakhir Service"
+                    const terakhirService = armada.terakhir_service ? 
+                        formatDateDisplay(armada.terakhir_service) : 
+                        '<span class="text-muted">Belum ada</span>';
+                    
+                    // Check if service is due soon (within 30 days) for active armada
+                    let serviceStatus = '';
+                    if (armada.status === 'aktif' && armada.jadwal_service) {
+                        const today = new Date();
+                        const jadwalService = new Date(armada.jadwal_service);
+                        const diffDays = Math.ceil((jadwalService - today) / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays <= 0) {
+                            serviceStatus = '<span class="badge bg-danger">Terlambat</span>';
+                        } else if (diffDays <= 30) {
+                            serviceStatus = `<span class="badge bg-warning">Dalam ${diffDays} hari</span>`;
+                        }
+                    }
+                    
+                    armadaTable.row.add([
+                        armada.kode_armada,
+                        armada.nomor_polisi,
+                        armada.jenis_kendaraan,
+                        `${armada.merk} ${armada.model}`,
+                        armada.tahun_pembuatan,
+                        createStatusBadge(armada.status),
+                        `${terakhirService} ${serviceStatus}`,
+                        actionsHtml
+                    ]);
+                });
+                
+                armadaTable.draw();
+                
+                // Setup detail button event listeners
+                setupDetailButtonListeners(armadaData);
+            } catch (error) {
+                console.error('Error loading armada data:', error);
+                showAlert('danger', 'Gagal memuat data armada');
+            }
+            
+            function setupDetailButtonListeners(armadaData) {
+                document.querySelectorAll('.btn-detail').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const armadaId = button.getAttribute('data-id');
+                        
+                        // Find armada in data
+                        const armada = armadaData.find(a => a.id == armadaId);
+                        
+                        if (armada) {
+                            // Populate modal with armada details
+                            document.getElementById('detailKode').textContent = armada.kode_armada;
+                            document.getElementById('detailNomorPolisi').textContent = armada.nomor_polisi;
+                            document.getElementById('detailJenisKendaraan').textContent = armada.jenis_kendaraan;
+                            document.getElementById('detailMerk').textContent = armada.merk;
+                            document.getElementById('detailModel').textContent = armada.model;
+                            document.getElementById('detailTahun').textContent = armada.tahun_pembuatan;
+                            document.getElementById('detailKapasitas').textContent = armada.kapasitas;
+                            document.getElementById('detailTanggalRegistrasi').textContent = formatDateDisplay(armada.tanggal_registrasi);
+                            
+                            // Set status with badge
+                            const detailStatus = document.getElementById('detailStatus');
+                            detailStatus.innerHTML = createStatusBadge(armada.status);
+                            
+                            // Format service dates with warnings if needed
+                            const terakhirService = document.getElementById('detailTerakhirService');
+                            terakhirService.textContent = armada.terakhir_service ? formatDateDisplay(armada.terakhir_service) : 'Belum ada';
+                            
+                            const jadwalService = document.getElementById('detailJadwalService');
+                            if (armada.jadwal_service) {
+                                const today = new Date();
+                                const serviceDate = new Date(armada.jadwal_service);
+                                const diffDays = Math.ceil((serviceDate - today) / (1000 * 60 * 60 * 24));
+                                
+                                if (diffDays <= 0) {
+                                    jadwalService.innerHTML = `${formatDateDisplay(armada.jadwal_service)} <span class="badge bg-danger ms-2">Terlambat</span>`;
+                                } else if (diffDays <= 30) {
+                                    jadwalService.innerHTML = `${formatDateDisplay(armada.jadwal_service)} <span class="badge bg-warning ms-2">Dalam ${diffDays} hari</span>`;
+                                } else {
+                                    jadwalService.textContent = formatDateDisplay(armada.jadwal_service);
+                                }
+                            } else {
+                                jadwalService.textContent = 'Belum dijadwalkan';
+                            }
+                            
+                            document.getElementById('detailCatatan').textContent = armada.catatan || 'Tidak ada catatan';
+                            
+                            // Set edit button URL
+                            document.getElementById('detailEditButton').href = `armada-edit.html?id=${armada.id}`;
+                            
+                            // Show modal
+                            const detailModal = new bootstrap.Modal(document.getElementById('detailArmadaModal'));
+                            detailModal.show();
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

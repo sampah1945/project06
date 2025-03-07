@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cetak Invoice - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        @media print {
+            body {
+                font-size: 12pt;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .card {
+                border: none !important;
+                box-shadow: none !important;
+            }
+            
+            .table {
+                width: 100% !important;
+            }
+            
+            .border-print {
+                border: 1px solid #ddd !important;
+            }
+            
+            .company-header {
+                border-bottom: 2px solid #333 !important;
+                padding-bottom: 10px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .invoice-title {
+                margin-top: 20px !important;
+                margin-bottom: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <div class="container mt-4 mb-5">
+        <!-- Print Controls -->
+        <div class="d-flex justify-content-end mb-4 no-print">
+            <button class="btn btn-primary me-2" id="printButton">
+                <i class="bx bx-printer"></i> Cetak
+            </button>
+            <a href="#" class="btn btn-secondary" id="backButton">
+                <i class="bx bx-arrow-back"></i> Kembali
+            </a>
+        </div>
+        
+        <!-- Company Header -->
+        <div class="row company-header">
+            <div class="col-6">
+                <img src="../assets/images/logo.png" alt="Logo Perusahaan" class="img-fluid mb-2" style="max-height: 60px;">
+                <h4 class="fw-bold mb-0">PT. TRUCKING INDONESIA</h4>
+                <p class="mb-0">Jl. Raya Utama No. 123, Jakarta Utara 14350</p>
+                <p class="mb-0">Telp: (021) 1234-5678 | Email: admin@trucking.id</p>
+            </div>
+            <div class="col-6 text-end">
+                <h1 class="invoice-title fw-bold text-uppercase text-primary">INVOICE</h1>
+            </div>
+        </div>
+        
+        <!-- Invoice Info -->
+        <div class="row mb-4">
+            <div class="col-6">
+                <div class="border-print p-3">
+                    <h6 class="fw-bold">Tagihan Kepada:</h6>
+                    <p class="fw-bold mb-1" id="namaPelanggan">PT. Nama Perusahaan</p>
+                    <p class="mb-1" id="alamatPelanggan">Jl. Alamat Lengkap, Kota, Provinsi</p>
+                    <p class="mb-0" id="kontakPelanggan">Telp: 021-1234567</p>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="border-print p-3">
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <td width="50%"><strong>No. Invoice</strong></td>
+                            <td width="50%" id="nomorInvoice">INV0001</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tanggal Invoice</strong></td>
+                            <td id="tanggalInvoice">01 Januari 2025</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tanggal Jatuh Tempo</strong></td>
+                            <td id="tanggalJatuhTempo">31 Januari 2025</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Status</strong></td>
+                            <td id="statusInvoice">Belum Dibayar</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Invoice Items -->
+        <div class="border-print mb-4">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th width="5%">No</th>
+                        <th width="15%">No. Booking</th>
+                        <th width="40%">Deskripsi</th>
+                        <th width="20%">Rute</th>
+                        <th width="20%" class="text-end">Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody id="invoiceItems">
+                    <!-- Items will be added here using JavaScript -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-end fw-bold">Subtotal:</td>
+                        <td class="text-end" id="subtotal">Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end fw-bold">PPN (<span id="ppnRate">11</span>%):</td>
+                        <td class="text-end" id="ppnAmount">Rp 0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end fw-bold">Total:</td>
+                        <td class="text-end fw-bold" id="grandTotal">Rp 0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <!-- Notes and Bank Info -->
+        <div class="row mb-4">
+            <div class="col-6">
+                <div class="border-print p-3">
+                    <h6 class="fw-bold">Catatan:</h6>
+                    <p id="catatan" class="mb-0">Harap melakukan pembayaran sebelum tanggal jatuh tempo. Terima kasih.</p>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="border-print p-3">
+                    <h6 class="fw-bold">Rekening Pembayaran:</h6>
+                    <p class="mb-1">Bank BCA</p>
+                    <p class="mb-1">PT. Trucking Indonesia</p>
+                    <p class="mb-0">No. Rekening: 1234567890</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Signature -->
+        <div class="row mt-5">
+            <div class="col-8">
+                <p class="mb-0">
+                    <strong>Metode Pembayaran:</strong> 
+                    <span id="metodePembayaran">-</span>
+                </p>
+            </div>
+            <div class="col-4 text-end">
+                <p class="mb-1">Hormat Kami,</p>
+                <p class="mb-1">PT. Trucking Indonesia</p>
+                <div class="mt-4 mb-2">
+                    <img src="../assets/images/ttd.png" alt="Tanda Tangan" height="60" style="display: none;">
+                </div>
+                <p class="mb-0">(Finance Manager)</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="mt-5 text-center">
+            <p class="text-muted mb-0">Terima kasih atas kepercayaan Anda menggunakan jasa kami.</p>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to get URL parameters
+        function getUrlParam(paramName) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get(paramName);
+        }
+
+        // Function to format currency to Rupiah
+        function formatRupiah(amount) {
+            if (amount === null || amount === undefined) return 'Rp 0';
+            return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Function to format date display
+        function formatDateDisplay(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        }
+
+        // Function to format status text
+        function formatStatus(status) {
+            const statusMap = {
+                'belum dibayar': 'Belum Dibayar',
+                'dibayar sebagian': 'Dibayar Sebagian',
+                'lunas': 'Lunas'
+            };
+            return statusMap[status] || status;
+        }
+
+        // Function to format metode pembayaran
+        function formatMetodePembayaran(metode) {
+            switch (metode) {
+                case 'transfer': return 'Transfer Bank';
+                case 'tunai': return 'Tunai';
+                case 'cek': return 'Cek / Giro';
+                default: return metode || '-';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get invoice ID from URL
+            const invoiceId = getUrlParam('id');
+
+            if (!invoiceId) {
+                alert('ID Invoice tidak ditemukan');
+                window.location.href = 'invoice-list.html';
+                return;
+            }
+
+            // Print button handler
+            document.getElementById('printButton').addEventListener('click', () => {
+                window.print();
+            });
+
+            // Back button handler
+            document.getElementById('backButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.history.back();
+            });
+
+            // Load invoice data
+            try {
+                // In a real app, we would use window.api to get invoice details
+                // For this example, we'll use a dummy API call simulation
+                
+                // Simulate API call
+                const result = await window.api.getInvoiceDetail(invoiceId);
+
+                if (!result || !result.invoice) {
+                    alert('Data invoice tidak ditemukan');
+                    window.location.href = 'invoice-list.html';
+                    return;
+                }
+
+                const { invoice, details, pelanggan } = result;
+
+                // Update page title
+                document.title = `${invoice.nomor_invoice} - Cetak Invoice`;
+
+                // Populate invoice data
+                document.getElementById('nomorInvoice').textContent = invoice.nomor_invoice;
+                document.getElementById('tanggalInvoice').textContent = formatDateDisplay(invoice.tanggal_invoice);
+                document.getElementById('tanggalJatuhTempo').textContent = formatDateDisplay(invoice.tanggal_jatuh_tempo);
+                document.getElementById('statusInvoice').textContent = formatStatus(invoice.status_pembayaran);
+                
+                document.getElementById('namaPelanggan').textContent = pelanggan.nama_perusahaan;
+                document.getElementById('alamatPelanggan').textContent = `${pelanggan.alamat}, ${pelanggan.kota}, ${pelanggan.provinsi}`;
+                document.getElementById('kontakPelanggan').textContent = `Telp: ${pelanggan.no_telepon}`;
+                
+                // Populate invoice items
+                const invoiceItems = document.getElementById('invoiceItems');
+                invoiceItems.innerHTML = '';
+
+                details.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${item.nomor_booking}</td>
+                        <td>${item.deskripsi}</td>
+                        <td>${item.asal} - ${item.tujuan}</td>
+                        <td class="text-end">${formatRupiah(item.jumlah)}</td>
+                    `;
+                    invoiceItems.appendChild(row);
+                });
+
+                // Update totals
+                document.getElementById('subtotal').textContent = formatRupiah(invoice.total_tagihan);
+                document.getElementById('ppnRate').textContent = ((invoice.ppn / invoice.total_tagihan) * 100).toFixed(0);
+                document.getElementById('ppnAmount').textContent = formatRupiah(invoice.ppn);
+                document.getElementById('grandTotal').textContent = formatRupiah(invoice.grand_total);
+
+                // Update catatan
+                document.getElementById('catatan').textContent = invoice.catatan || 'Harap melakukan pembayaran sebelum tanggal jatuh tempo. Terima kasih.';
+                
+                // Update metode pembayaran
+                document.getElementById('metodePembayaran').textContent = formatMetodePembayaran(invoice.metode_pembayaran);
+
+                // Automatically print if requested
+                if (getUrlParam('print') === 'true') {
+                    setTimeout(() => {
+                        window.print();
+                    }, 500);
+                }
+
+            } catch (error) {
+                console.error('Error loading invoice:', error);
+                alert('Gagal memuat data invoice');
+            }
+        });
+    </script>
+</body>
+</html>

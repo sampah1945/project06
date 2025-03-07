@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Pelanggan - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Tambah Pelanggan Baru</h2>
+                    <a href="pelanggan-list.html" class="btn btn-outline-secondary">
+                        <i class='bx bx-arrow-back'></i> Kembali
+                    </a>
+                </div>
+
+                <!-- Form Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form id="pelangganForm" class="needs-validation" novalidate>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Perusahaan</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="kodePelanggan" class="form-label">Kode Pelanggan</label>
+                                    <input type="text" class="form-control" id="kodePelanggan" placeholder="Masukkan kode pelanggan" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan kode pelanggan
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="namaPerusahaan" class="form-label">Nama Perusahaan</label>
+                                    <input type="text" class="form-control" id="namaPerusahaan" placeholder="Masukkan nama perusahaan" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan nama perusahaan
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="alamat" class="form-label">Alamat</label>
+                                    <textarea class="form-control" id="alamat" rows="2" placeholder="Masukkan alamat lengkap" required></textarea>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan alamat
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="kota" class="form-label">Kota</label>
+                                    <input type="text" class="form-control" id="kota" placeholder="Masukkan kota" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan kota
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="provinsi" class="form-label">Provinsi</label>
+                                    <input type="text" class="form-control" id="provinsi" placeholder="Masukkan provinsi" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan provinsi
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="kodePos" class="form-label">Kode Pos</label>
+                                    <input type="text" class="form-control" id="kodePos" placeholder="Masukkan kode pos">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="npwp" class="form-label">NPWP</label>
+                                    <input type="text" class="form-control" id="npwp" placeholder="Masukkan NPWP (opsional)">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select class="form-select" id="status" required>
+                                        <option value="aktif" selected>Aktif</option>
+                                        <option value="tidak aktif">Tidak Aktif</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih status
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Kontak</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="namaKontak" class="form-label">Nama Kontak</label>
+                                    <input type="text" class="form-control" id="namaKontak" placeholder="Masukkan nama kontak" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan nama kontak
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="jabatanKontak" class="form-label">Jabatan</label>
+                                    <input type="text" class="form-control" id="jabatanKontak" placeholder="Masukkan jabatan kontak">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" placeholder="Masukkan email">
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan email yang valid
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="noTelepon" class="form-label">No. Telepon</label>
+                                    <input type="text" class="form-control" id="noTelepon" placeholder="Masukkan nomor telepon" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan nomor telepon
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="catatan" class="form-label">Catatan</label>
+                                <textarea class="form-control" id="catatan" rows="3" placeholder="Masukkan catatan tambahan (opsional)"></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button" id="resetButton" class="btn btn-outline-secondary">Reset</button>
+                                <button type="submit" id="submitButton" class="btn btn-primary">
+                                    <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    Simpan Pelanggan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Generate kode pelanggan
+            const today = new Date();
+            const year = today.getFullYear().toString().substr(-2);
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            const kode = `CUST${year}${month}${random}`;
+            
+            document.getElementById('kodePelanggan').value = kode;
+            
+            // Reset button handler
+            document.getElementById('resetButton').addEventListener('click', () => {
+                const confirmed = confirm('Apakah Anda yakin ingin mereset formulir?');
+                if (confirmed) {
+                    document.getElementById('pelangganForm').reset();
+                    
+                    // Keep the generated kode
+                    document.getElementById('kodePelanggan').value = kode;
+                    document.getElementById('status').value = 'aktif';
+                }
+            });
+            
+            // Form submission handler
+            document.getElementById('pelangganForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Validasi form
+                const form = e.target;
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+                
+                // Validasi email jika diisi
+                const email = document.getElementById('email').value;
+                if (email && !validateEmail(email)) {
+                    document.getElementById('email').classList.add('is-invalid');
+                    return;
+                }
+                
+                // Tampilkan spinner dan nonaktifkan tombol
+                const submitButton = document.getElementById('submitButton');
+                const submitSpinner = document.getElementById('submitSpinner');
+                submitButton.disabled = true;
+                submitSpinner.classList.remove('d-none');
+                
+                try {
+                    const pelangganData = {
+                        kode_pelanggan: document.getElementById('kodePelanggan').value,
+                        nama_perusahaan: document.getElementById('namaPerusahaan').value,
+                        alamat: document.getElementById('alamat').value,
+                        kota: document.getElementById('kota').value,
+                        provinsi: document.getElementById('provinsi').value,
+                        kode_pos: document.getElementById('kodePos').value,
+                        npwp: document.getElementById('npwp').value,
+                        nama_kontak: document.getElementById('namaKontak').value,
+                        jabatan_kontak: document.getElementById('jabatanKontak').value,
+                        email: document.getElementById('email').value,
+                        no_telepon: document.getElementById('noTelepon').value,
+                        status: document.getElementById('status').value,
+                        catatan: document.getElementById('catatan').value
+                    };
+                    
+                    const result = await window.api.addPelanggan(pelangganData);
+                    
+                    if (result && result.id) {
+                        showAlert('success', 'Pelanggan berhasil disimpan');
+                        
+                        // Redirect ke halaman daftar pelanggan setelah 1 detik
+                        setTimeout(() => {
+                            window.location.href = 'pelanggan-list.html';
+                        }, 1000);
+                    } else {
+                        throw new Error('Gagal menyimpan pelanggan');
+                    }
+                } catch (error) {
+                    console.error('Gagal menyimpan pelanggan:', error);
+                    showAlert('danger', 'Gagal menyimpan pelanggan');
+                    
+                    // Sembunyikan spinner dan aktifkan tombol kembali
+                    submitButton.disabled = false;
+                    submitSpinner.classList.add('d-none');
+                }
+            });
+            
+            // Email validation function
+            function validateEmail(email) {
+                const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/chart.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="bg-dark">
+            <div class="sidebar-header text-center py-4">
+                <img src="../assets/images/logo.png" alt="Logo" class="img-fluid" style="max-height: 50px;">
+                <h5 class="text-white mt-2">Sistem Manajemen Trucking</h5>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li class="active">
+                    <a href="dashboard.html">
+                        <i class='bx bxs-dashboard'></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#bookingSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class='bx bxs-book-content'></i> Booking
+                    </a>
+                    <ul class="collapse list-unstyled" id="bookingSubmenu">
+                        <li>
+                            <a href="booking-list.html">Daftar Booking</a>
+                        </li>
+                        <li>
+                            <a href="booking-add.html">Tambah Booking</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#pengirimanSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class='bx bxs-truck'></i> Pengiriman
+                    </a>
+                    <ul class="collapse list-unstyled" id="pengirimanSubmenu">
+                        <li>
+                            <a href="penugasan-list.html">Penugasan</a>
+                        </li>
+                        <li>
+                            <a href="tracking-list.html">Tracking</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#invoiceSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class='bx bxs-file-invoice'></i> Invoice
+                    </a>
+                    <ul class="collapse list-unstyled" id="invoiceSubmenu">
+                        <li>
+                            <a href="invoice-list.html">Daftar Invoice</a>
+                        </li>
+                        <li>
+                            <a href="invoice-add.html">Buat Invoice</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#biayaSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class='bx bxs-wallet'></i> Biaya Operasional
+                    </a>
+                    <ul class="collapse list-unstyled" id="biayaSubmenu">
+                        <li>
+                            <a href="biaya-list.html">Daftar Biaya</a>
+                        </li>
+                        <li>
+                            <a href="biaya-add.html">Tambah Biaya</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#masterSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class='bx bxs-data'></i> Data Master
+                    </a>
+                    <ul class="collapse list-unstyled" id="masterSubmenu">
+                        <li>
+                            <a href="pelanggan-list.html">Pelanggan</a>
+                        </li>
+                        <li>
+                            <a href="driver-list.html">Driver</a>
+                        </li>
+                        <li>
+                            <a href="armada-list.html">Armada</a>
+                        </li>
+                        <li>
+                            <a href="tarif-list.html">Tarif</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#laporanSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class='bx bxs-report'></i> Laporan
+                    </a>
+                    <ul class="collapse list-unstyled" id="laporanSubmenu">
+                        <li>
+                            <a href="laporan-pendapatan.html">Pendapatan</a>
+                        </li>
+                        <li>
+                            <a href="laporan-biaya.html">Biaya Operasional</a>
+                        </li>
+                        <li>
+                            <a href="laporan-profit.html">Profitabilitas</a>
+                        </li>
+                        <li>
+                            <a href="laporan-performa.html">Performa Driver</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#userSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class='bx bxs-user-account'></i> Pengguna
+                    </a>
+                    <ul class="collapse list-unstyled" id="userSubmenu">
+                        <li>
+                            <a href="user-list.html">Daftar Pengguna</a>
+                        </li>
+                        <li>
+                            <a href="user-add.html">Tambah Pengguna</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    
+                    <div class="ms-auto d-flex align-items-center">
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="../assets/images/avatar.png" alt="User" class="rounded-circle me-2" width="32" height="32">
+                                <span id="userDisplayName">User Name</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="profile.html"><i class='bx bxs-user me-2'></i> Profil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logoutButton"><i class='bx bxs-log-out me-2'></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Dashboard Content -->
+            <div class="container-fluid p-4">
+                <h2 class="mb-4">Dashboard</h2>
+
+                <!-- Metrics Cards -->
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Booking Bulan Ini</h6>
+                                        <h3 class="fw-bold" id="totalBooking">0</h3>
+                                    </div>
+                                    <div class="bg-primary text-white rounded p-3">
+                                        <i class='bx bxs-book-content fs-3'></i>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="booking-list.html" class="text-decoration-none">Lihat Detail <i class='bx bx-right-arrow-alt'></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Pendapatan Bulan Ini</h6>
+                                        <h3 class="fw-bold" id="totalPendapatan">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-success text-white rounded p-3">
+                                        <i class='bx bxs-dollar-circle fs-3'></i>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="laporan-pendapatan.html" class="text-decoration-none">Lihat Detail <i class='bx bx-right-arrow-alt'></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Biaya Operasional Bulan Ini</h6>
+                                        <h3 class="fw-bold" id="totalBiaya">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-danger text-white rounded p-3">
+                                        <i class='bx bxs-wallet fs-3'></i>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="laporan-biaya.html" class="text-decoration-none">Lihat Detail <i class='bx bx-right-arrow-alt'></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Profit Bulan Ini</h6>
+                                        <h3 class="fw-bold" id="totalProfit">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-info text-white rounded p-3">
+                                        <i class='bx bxs-chart fs-3'></i>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="laporan-profit.html" class="text-decoration-none">Lihat Detail <i class='bx bx-right-arrow-alt'></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Pendapatan vs Biaya (6 Bulan Terakhir)</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="revenueExpensesChart" height="280"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Distribusi Status Booking</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="bookingStatusChart" height="280"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tables Row -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Booking Terbaru</h5>
+                                <a href="booking-list.html" class="btn btn-sm btn-primary">Lihat Semua</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>No. Booking</th>
+                                                <th>Pelanggan</th>
+                                                <th>Tanggal</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recentBookingTable">
+                                            <!-- Data akan diisi dengan JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Invoice Jatuh Tempo</h5>
+                                <a href="invoice-list.html" class="btn btn-sm btn-primary">Lihat Semua</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>No. Invoice</th>
+                                                <th>Pelanggan</th>
+                                                <th>Jumlah</th>
+                                                <th>Jatuh Tempo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dueSoonInvoicesTable">
+                                            <!-- Data akan diisi dengan JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Sidebar toggle
+            document.getElementById('sidebarCollapse').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+            
+            // Logout handler
+            document.getElementById('logoutButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            });
+            
+            // Check if user is logged in
+            const userString = localStorage.getItem('user');
+            if (!userString) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const user = JSON.parse(userString);
+            document.getElementById('userDisplayName').textContent = user.nama_lengkap;
+            
+            // Fetch dashboard data
+            try {
+                const dashboardData = await window.api.getDashboardSummary();
+                
+                // Update metrics
+                document.getElementById('totalBooking').textContent = dashboardData.totalBookingBulanIni;
+                document.getElementById('totalPendapatan').textContent = formatRupiah(dashboardData.totalPendapatanBulanIni);
+                document.getElementById('totalBiaya').textContent = formatRupiah(dashboardData.totalBiayaBulanIni);
+                document.getElementById('totalProfit').textContent = formatRupiah(dashboardData.profitBulanIni);
+                
+                // Initialize Booking Status Chart
+                const bookingStatusLabels = dashboardData.statusBooking.map(item => formatStatusBooking(item.status));
+                const bookingStatusData = dashboardData.statusBooking.map(item => item.jumlah);
+                
+                const bookingCtx = document.getElementById('bookingStatusChart').getContext('2d');
+                new Chart(bookingCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: bookingStatusLabels,
+                        datasets: [{
+                            data: bookingStatusData,
+                            backgroundColor: [
+                                '#4e73df',
+                                '#1cc88a',
+                                '#36b9cc',
+                                '#f6c23e',
+                                '#e74a3b'
+                            ],
+                            hoverBackgroundColor: [
+                                '#2e59d9',
+                                '#17a673',
+                                '#2c9faf',
+                                '#dda20a',
+                                '#be2617'
+                            ],
+                            hoverBorderColor: "rgba(234, 236, 244, 1)",
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    var dataset = data.datasets[tooltipItem.datasetIndex];
+                                    var total = dataset.data.reduce(function(previousValue, currentValue) {
+                                        return previousValue + currentValue;
+                                    });
+                                    var currentValue = dataset.data[tooltipItem.index];
+                                    var percentage = Math.floor(((currentValue/total) * 100)+0.5);
+                                    return data.labels[tooltipItem.index] + ': ' + currentValue + ' (' + percentage + '%)';
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                boxWidth: 12
+                            }
+                        },
+                        cutoutPercentage: 70
+                    }
+                });
+                
+                // Fetch last 6 months revenue & expenses
+                const today = new Date();
+                const sixMonthsAgo = new Date();
+                sixMonthsAgo.setMonth(today.getMonth() - 5);
+                
+                const startDate = formatDate(sixMonthsAgo);
+                const endDate = formatDate(today);
+                
+                const [revenueData, expensesData] = await Promise.all([
+                    window.api.getLaporanPendapatan({ startDate, endDate, groupBy: 'monthly' }),
+                    window.api.getLaporanBiaya({ startDate, endDate, groupBy: 'monthly' })
+                ]);
+                
+                // Generate labels for the last 6 months
+                const months = [];
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
+                
+                for (let i = 5; i >= 0; i--) {
+                    let month = (currentMonth - i + 12) % 12;
+                    let year = currentYear - Math.floor((i - currentMonth) / 12);
+                    const monthName = new Date(year, month, 1).toLocaleString('id-ID', { month: 'short' });
+                    months.push(`${monthName} ${year}`);
+                }
+                
+                // Process revenue and expenses data
+                const revenueValues = new Array(6).fill(0);
+                const expensesValues = new Array(6).fill(0);
+                
+                revenueData.forEach(item => {
+                    const [year, month] = item.bulan.split('-');
+                    const monthIndex = (Number(month) - 1 + 12 - (currentMonth - 5)) % 12;
+                    if (monthIndex >= 0 && monthIndex < 6) {
+                        revenueValues[monthIndex] = item.total;
+                    }
+                });
+                
+                expensesData.forEach(item => {
+                    const [year, month] = item.bulan.split('-');
+                    const monthIndex = (Number(month) - 1 + 12 - (currentMonth - 5)) % 12;
+                    if (monthIndex >= 0 && monthIndex < 6) {
+                        expensesValues[monthIndex] = item.total;
+                    }
+                });
+                
+                // Create Revenue vs Expenses Chart
+                const revExpCtx = document.getElementById('revenueExpensesChart').getContext('2d');
+                new Chart(revExpCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [
+                            {
+                                label: 'Pendapatan',
+                                backgroundColor: 'rgba(78, 115, 223, 0.7)',
+                                borderColor: 'rgba(78, 115, 223, 1)',
+                                data: revenueValues,
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Biaya Operasional',
+                                backgroundColor: 'rgba(231, 74, 59, 0.7)',
+                                borderColor: 'rgba(231, 74, 59, 1)',
+                                data: expensesValues,
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    callback: function(value) {
+                                        return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                    }
+                                }
+                            }]
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return data.datasets[tooltipItem.datasetIndex].label + ': ' + formatRupiah(tooltipItem.yLabel);
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Fetch recent bookings
+                const bookingFilter = {
+                    limit: 5
+                };
+                const recentBookings = await window.api.getBookingOrders(bookingFilter);
+                
+                const recentBookingTable = document.getElementById('recentBookingTable');
+                recentBookingTable.innerHTML = '';
+                
+                if (recentBookings.length > 0) {
+                    recentBookings.slice(0, 5).forEach(booking => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><a href="booking-detail.html?id=${booking.id}" class="text-decoration-none">${booking.nomor_booking}</a></td>
+                            <td>${booking.nama_pelanggan}</td>
+                            <td>${formatDateDisplay(booking.tanggal_booking)}</td>
+                            <td>${createStatusBadge(booking.status)}</td>
+                        `;
+                        recentBookingTable.appendChild(row);
+                    });
+                } else {
+                    recentBookingTable.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ada data booking terbaru</td></tr>';
+                }
+                
+                // Fetch due soon invoices
+                const invoiceFilter = {
+                    status: 'belum dibayar',
+                    dueSoon: true
+                };
+                const dueSoonInvoices = await window.api.getInvoices(invoiceFilter);
+                
+                const dueSoonInvoicesTable = document.getElementById('dueSoonInvoicesTable');
+                dueSoonInvoicesTable.innerHTML = '';
+                
+                if (dueSoonInvoices.length > 0) {
+                    dueSoonInvoices.slice(0, 5).forEach(invoice => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><a href="invoice-detail.html?id=${invoice.id}" class="text-decoration-none">${invoice.nomor_invoice}</a></td>
+                            <td>${invoice.nama_perusahaan}</td>
+                            <td>${formatRupiah(invoice.grand_total)}</td>
+                            <td>${formatDateDisplay(invoice.tanggal_jatuh_tempo)}</td>
+                        `;
+                        dueSoonInvoicesTable.appendChild(row);
+                    });
+                } else {
+                    dueSoonInvoicesTable.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ada invoice yang akan jatuh tempo</td></tr>';
+                }
+                
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+                alert('Gagal memuat data dashboard');
+            }
+        });
+        
+        // Helper Functions
+        function formatRupiah(amount) {
+            return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+        
+        function formatDateDisplay(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        
+        function formatStatusBooking(status) {
+            const statusMap = {
+                'terdaftar': 'Terdaftar',
+                'ditugaskan': 'Ditugaskan',
+                'dalam perjalanan': 'Dalam Perjalanan',
+                'sampai tujuan': 'Sampai Tujuan',
+                'selesai': 'Selesai',
+                'dibatalkan': 'Dibatalkan'
+            };
+            return statusMap[status] || status;
+        }
+        
+        function createStatusBadge(status) {
+            let badgeClass = 'badge ';
+            switch (status) {
+                case 'terdaftar':
+                    badgeClass += 'bg-secondary';
+                    break;
+                case 'ditugaskan':
+                    badgeClass += 'bg-info';
+                    break;
+                case 'dalam perjalanan':
+                    badgeClass += 'bg-primary';
+                    break;
+                case 'sampai tujuan':
+                    badgeClass += 'bg-warning';
+                    break;
+                case 'selesai':
+                    badgeClass += 'bg-success';
+                    break;
+                case 'dibatalkan':
+                    badgeClass += 'bg-danger';
+                    break;
+                default:
+                    badgeClass += 'bg-secondary';
+            }
+            return `<span class="${badgeClass}">${formatStatusBooking(status)}</span>`;
+        }
+    </script>
+</body>
+</html>

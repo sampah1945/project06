@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penugasan Driver - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Penugasan Driver</h2>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPenugasanModal">
+                        <i class='bx bx-plus'></i> Tambah Penugasan
+                    </button>
+                </div>
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter</h5>
+                        <form id="filterForm">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="filterStatus" class="form-label">Status</label>
+                                    <select class="form-select" id="filterStatus">
+                                        <option value="">Semua Status</option>
+                                        <option value="ditugaskan">Ditugaskan</option>
+                                        <option value="dalam perjalanan">Dalam Perjalanan</option>
+                                        <option value="selesai">Selesai</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterDriver" class="form-label">Driver</label>
+                                    <select class="form-select" id="filterDriver">
+                                        <option value="">Semua Driver</option>
+                                        <!-- Opsi driver akan diisi dengan JavaScript -->
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterStartDate" class="form-label">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="filterStartDate">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterEndDate" class="form-label">Tanggal Selesai</label>
+                                    <input type="date" class="form-control" id="filterEndDate">
+                                </div>
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" id="resetFilterButton" class="btn btn-outline-secondary me-2">Reset</button>
+                                    <button type="submit" class="btn btn-primary">Terapkan Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Data Table Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="penugasanTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No. Booking</th>
+                                        <th>Tanggal Penugasan</th>
+                                        <th>Pelanggan</th>
+                                        <th>Asal - Tujuan</th>
+                                        <th>Driver</th>
+                                        <th>Armada</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Penugasan -->
+    <div class="modal fade" id="addPenugasanModal" tabindex="-1" aria-labelledby="addPenugasanModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPenugasanModalLabel">Tambah Penugasan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPenugasanForm">
+                        <div class="mb-3">
+                            <label for="bookingId" class="form-label">Booking Order</label>
+                            <select class="form-select" id="bookingId" required>
+                                <option value="">Pilih Booking Order</option>
+                                <!-- Opsi booking akan diisi dengan JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driverId" class="form-label">Driver</label>
+                            <select class="form-select" id="driverId" required>
+                                <option value="">Pilih Driver</option>
+                                <!-- Opsi driver akan diisi dengan JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="armadaId" class="form-label">Armada</label>
+                            <select class="form-select" id="armadaId" required>
+                                <option value="">Pilih Armada</option>
+                                <!-- Opsi armada akan diisi dengan JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="catatan" class="form-label">Catatan</label>
+                            <textarea class="form-control" id="catatan" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="savePenugasanButton">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Penugasan -->
+    <div class="modal fade" id="detailPenugasanModal" tabindex="-1" aria-labelledby="detailPenugasanModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailPenugasanModalLabel">Detail Penugasan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-muted">Informasi Booking</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="40%">No. Booking</td>
+                                    <td width="5%">:</td>
+                                    <td width="55%" id="detailNoBooking"></td>
+                                </tr>
+                                <tr>
+                                    <td>Pelanggan</td>
+                                    <td>:</td>
+                                    <td id="detailPelanggan"></td>
+                                </tr>
+                                <tr>
+                                    <td>Asal</td>
+                                    <td>:</td>
+                                    <td id="detailAsal"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tujuan</td>
+                                    <td>:</td>
+                                    <td id="detailTujuan"></td>
+                                </tr>
+                                <tr>
+                                    <td>Jenis Kontainer</td>
+                                    <td>:</td>
+                                    <td id="detailJenisKontainer"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tanggal Pickup</td>
+                                    <td>:</td>
+                                    <td id="detailTanggalPickup"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-muted">Informasi Penugasan</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="40%">Tanggal Penugasan</td>
+                                    <td width="5%">:</td>
+                                    <td width="55%" id="detailTanggalPenugasan"></td>
+                                </tr>
+                                <tr>
+                                    <td>Driver</td>
+                                    <td>:</td>
+                                    <td id="detailDriver"></td>
+                                </tr>
+                                <tr>
+                                    <td>Armada</td>
+                                    <td>:</td>
+                                    <td id="detailArmada"></td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>:</td>
+                                    <td id="detailStatus"></td>
+                                </tr>
+                                <tr>
+                                    <td>Catatan</td>
+                                    <td>:</td>
+                                    <td id="detailCatatan"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/sweetalert2.all.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Load components
+        $(function() {
+            $("#sidebar-container").load("../components/sidebar.html");
+            $("#navbar-container").load("../components/navbar.html");
+            
+            // Initialize after components are loaded
+            setTimeout(function() {
+                initPage();
+            }, 500);
+        });
+
+        function initPage() {
+            // Initialize DataTable
+            const penugasanTable = $('#penugasanTable').DataTable({
+                responsive: true,
+                language: {
+                    url: '../assets/js/dataTables.indonesian.json'
+                }
+            });
+
+            // Load data
+            loadPenugasanData();
+            loadDrivers();
+            loadArmada();
+            loadAvailableBookings();
+
+            // Event listeners
+            $('#filterForm').on('submit', function(e) {
+                e.preventDefault();
+                loadPenugasanData();
+            });
+
+            $('#resetFilterButton').on('click', function() {
+                $('#filterForm')[0].reset();
+                loadPenugasanData();
+            });
+
+            $('#savePenugasanButton').on('click', function() {
+                savePenugasan();
+            });
+        }
+
+        function loadPenugasanData() {
+            // Get filter values
+            const status = $('#filterStatus').val();
+            const driverId = $('#filterDriver').val();
+            const startDate = $('#filterStartDate').val();
+            const endDate = $('#filterEndDate').val();
+
+            // Clear table
+            $('#penugasanTable').DataTable().clear();
+
+            // Show loading
+            Swal.fire({
+                title: 'Memuat Data',
+                text: 'Mohon tunggu...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Call API to get penugasan data
+            window.api.getPenugasanData({ status, driverId, startDate, endDate })
+                .then(data => {
+                    // Populate table
+                    const table = $('#penugasanTable').DataTable();
+                    
+                    data.forEach(item => {
+                        table.row.add([
+                            item.nomor_booking,
+                            formatDate(item.tanggal_penugasan),
+                            item.nama_pelanggan,
+                            `${item.asal} - ${item.tujuan}`,
+                            item.nama_driver,
+                            item.nomor_polisi,
+                            formatStatus(item.status),
+                            `<button type="button" class="btn btn-sm btn-info me-1" onclick="viewPenugasanDetail(${item.id})"><i class='bx bx-show'></i></button>
+                             <button type="button" class="btn btn-sm btn-warning me-1" onclick="updateStatusPenugasan(${item.id})"><i class='bx bx-edit'></i></button>`
+                        ]);
+                    });
+                    
+                    table.draw();
+                    Swal.close();
+                })
+                .catch(err => {
+                    console.error('Error loading penugasan data:', err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal memuat data penugasan: ' + err.message
+                    });
+                });
+        }
+
+        function loadDrivers() {
+            window.api.getDrivers()
+                .then(drivers => {
+                    const filterSelect = $('#filterDriver');
+                    const formSelect = $('#driverId');
+                    
+                    filterSelect.find('option:not(:first)').remove();
+                    formSelect.find('option:not(:first)').remove();
+                    
+                    drivers.forEach(driver => {
+                        const option = `<option value="${driver.id}">${driver.nama_lengkap}</option>`;
+                        filterSelect.append(option);
+                        formSelect.append(option);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error loading drivers:', err);
+                });
+        }
+
+        function loadArmada() {
+            window.api.getArmada()
+                .then(armada => {
+                    const select = $('#armadaId');
+                    select.find('option:not(:first)').remove();
+                    
+                    armada.forEach(item => {
+                        select.append(`<option value="${item.id}">${item.nomor_polisi} - ${item.merk} ${item.model}</option>`);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error loading armada:', err);
+                });
+        }
+
+        function loadAvailableBookings() {
+            window.api.getAvailableBookings()
+                .then(bookings => {
+                    const select = $('#bookingId');
+                    select.find('option:not(:first)').remove();
+                    
+                    bookings.forEach(booking => {
+                        select.append(`<option value="${booking.id}">${booking.nomor_booking} - ${booking.nama_pelanggan} (${booking.asal} - ${booking.tujuan})</option>`);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error loading available bookings:', err);
+                });
+        }
+
+        function savePenugasan() {
+            // Validate form
+            const form = document.getElementById('addPenugasanForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Get form values
+            const bookingId = $('#bookingId').val();
+            const driverId = $('#driverId').val();
+            const armadaId = $('#armadaId').val();
+            const catatan = $('#catatan').val();
+            
+            // Show loading
+            Swal.fire({
+                title: 'Menyimpan Data',
+                text: 'Mohon tunggu...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Call API to save penugasan
+            window.api.savePenugasan({
+                booking_order_id: bookingId,
+                driver_id: driverId,
+                armada_id: armadaId,
+                catatan: catatan
+            })
+            .then(result => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Penugasan driver berhasil disimpan'
+                });
+                
+                // Reset form and close modal
+                $('#addPenugasanForm')[0].reset();
+                $('#addPenugasanModal').modal('hide');
+                
+                // Reload data
+                loadPenugasanData();
+                loadAvailableBookings();
+            })
+            .catch(err => {
+                console.error('Error saving penugasan:', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Gagal menyimpan penugasan: ' + err.message
+                });
+            });
+        }
+
+        function viewPenugasanDetail(id) {
+            window.api.getPenugasanDetail(id)
+                .then(data => {
+                    // Populate detail modal
+                    $('#detailNoBooking').text(data.nomor_booking);
+                    $('#detailPelanggan').text(data.nama_pelanggan);
+                    $('#detailAsal').text(data.asal);
+                    $('#detailTujuan').text(data.tujuan);
+                    $('#detailJenisKontainer').text(data.jenis_kontainer);
+                    $('#detailTanggalPickup').text(formatDate(data.tanggal_pickup));
+                    $('#detailTanggalPenugasan').text(formatDate(data.tanggal_penugasan));
+                    $('#detailDriver').text(data.nama_driver);
+                    $('#detailArmada').text(data.nomor_polisi);
+                    $('#detailStatus').html(formatStatus(data.status));
+                    $('#detailCatatan').text(data.catatan || '-');
+                    
+                    // Show modal
+                    $('#detailPenugasanModal').modal('show');
+                })
+                .catch(err => {
+                    console.error('Error loading penugasan detail:', err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal memuat detail penugasan: ' + err.message
+                    });
+                });
+        }
+
+        function updateStatusPenugasan(id) {
+            Swal.fire({
+                title: 'Update Status',
+                text: 'Pilih status penugasan',
+                input: 'select',
+                inputOptions: {
+                    'ditugaskan': 'Ditugaskan',
+                    'dalam perjalanan': 'Dalam Perjalanan',
+                    'selesai': 'Selesai'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Update',
+                cancelButtonText: 'Batal',
+                inputValidator: (value) => {
+                    return new Promise((resolve) => {
+                        if (value) {
+                            resolve();
+                        } else {
+                            resolve('Anda harus memilih status');
+                        }
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const newStatus = result.value;
+                    
+                    // Show loading
+                    Swal.fire({
+                        title: 'Memperbarui Status',
+                        text: 'Mohon tunggu...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Call API to update status
+                    window.api.updatePenugasanStatus({
+                        id: id,
+                        status: newStatus
+                    })
+                    .then(result => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Status penugasan berhasil diperbarui'
+                        });
+                        
+                        // Reload data
+                        loadPenugasanData();
+                    })
+                    .catch(err => {
+                        console.error('Error updating status:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Gagal memperbarui status: ' + err.message
+                        });
+                    });
+                }
+            });
+        }
+
+        function formatDate(dateStr) {
+            const options = { day: '2-digit', month: 'short', year: 'numeric' };
+            return new Date(dateStr).toLocaleDateString('id-ID', options);
+        }
+
+        function formatStatus(status) {
+            let badgeClass = '';
+            switch(status.toLowerCase()) {
+                case 'ditugaskan':
+                    badgeClass = 'bg-info';
+                    break;
+                case 'dalam perjalanan':
+                    badgeClass = 'bg-primary';
+                    break;
+                case 'selesai':
+                    badgeClass = 'bg-success';
+                    break;
+                default:
+                    badgeClass = 'bg-secondary';
+            }
+            return `<span class="badge ${badgeClass}">${status}</span>`;
+        }
+    </script>
+</body>
+</html>

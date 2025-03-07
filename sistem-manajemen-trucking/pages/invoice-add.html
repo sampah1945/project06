@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Invoice - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Buat Invoice Baru</h2>
+                    <a href="invoice-list.html" class="btn btn-outline-secondary">
+                        <i class='bx bx-arrow-back'></i> Kembali
+                    </a>
+                </div>
+
+                <!-- Form Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form id="invoiceForm" class="needs-validation" novalidate>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Invoice</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="badge bg-secondary">Draft</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="nomorInvoice" class="form-label">Nomor Invoice</label>
+                                    <input type="text" class="form-control" id="nomorInvoice" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="tanggalInvoice" class="form-label">Tanggal Invoice</label>
+                                    <input type="date" class="form-control" id="tanggalInvoice" required>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih tanggal invoice
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="tanggalJatuhTempo" class="form-label">Tanggal Jatuh Tempo</label>
+                                    <input type="date" class="form-control" id="tanggalJatuhTempo" required>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih tanggal jatuh tempo
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <label for="pelanggan" class="form-label">Pelanggan</label>
+                                    <select class="form-select" id="pelanggan" required>
+                                        <option value="">Pilih Pelanggan</option>
+                                        <!-- Opsi akan diisi oleh JavaScript -->
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih pelanggan
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="ppnPercentage" class="form-label">PPN (%)</label>
+                                    <input type="number" class="form-control" id="ppnPercentage" value="11" min="0" max="100" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan persentase PPN
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row mb-4 align-items-center">
+                                <div class="col">
+                                    <h5 class="card-title">Item Invoice</h5>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-primary btn-sm" id="pilihBookingButton">
+                                        <i class='bx bx-plus'></i> Pilih Booking
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive mb-3">
+                                <table class="table table-bordered" id="itemTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th width="5%">#</th>
+                                            <th width="20%">No. Booking</th>
+                                            <th width="35%">Deskripsi</th>
+                                            <th width="15%">Rute</th>
+                                            <th width="10%">Jumlah</th>
+                                            <th width="10%">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemTableBody">
+                                        <tr id="emptyRow">
+                                            <td colspan="6" class="text-center">Belum ada item. Klik 'Pilih Booking' untuk menambahkan.</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="4" class="text-end fw-bold">Subtotal</td>
+                                            <td colspan="2" id="subtotal">Rp 0</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-end fw-bold">PPN (<span id="ppnRate">11</span>%)</td>
+                                            <td colspan="2" id="ppnAmount">Rp 0</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-end fw-bold">Total</td>
+                                            <td colspan="2" id="grandTotal">Rp 0</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="catatan" class="form-label">Catatan</label>
+                                <textarea class="form-control" id="catatan" rows="3" placeholder="Catatan tambahan"></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button" id="resetButton" class="btn btn-outline-secondary">Reset</button>
+                                <button type="submit" id="submitButton" class="btn btn-primary">
+                                    <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    Simpan Invoice
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pilih Booking -->
+    <div class="modal fade" id="pilihBookingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Booking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class='bx bx-info-circle me-2'></i>
+                        Berikut adalah daftar booking yang telah selesai dan belum dibuatkan invoice.
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="5%">
+                                        <input type="checkbox" id="selectAllBooking">
+                                    </th>
+                                    <th>No. Booking</th>
+                                    <th>Tanggal</th>
+                                    <th>Rute</th>
+                                    <th>Jenis Kontainer</th>
+                                    <th>Tarif</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingTableBody">
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="tambahItemButton">Tambahkan Item</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Generate nomor invoice
+            try {
+                const nomorInvoice = await window.api.generateInvoiceNumber();
+                document.getElementById('nomorInvoice').value = nomorInvoice;
+            } catch (error) {
+                console.error('Gagal generate nomor invoice:', error);
+                showAlert('danger', 'Gagal generate nomor invoice');
+            }
+            
+            // Set tanggal invoice hari ini
+            const today = new Date();
+            document.getElementById('tanggalInvoice').value = formatDateInput(today);
+            
+            // Set tanggal jatuh tempo ke 30 hari dari sekarang
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 30);
+            document.getElementById('tanggalJatuhTempo').value = formatDateInput(dueDate);
+            
+            // Load daftar pelanggan
+            try {
+                const pelanggan = await window.api.getPelanggan();
+                const pelangganSelect = document.getElementById('pelanggan');
+                
+                pelanggan.forEach(p => {
+                    if (p.status === 'aktif') {
+                        const option = document.createElement('option');
+                        option.value = p.id;
+                        option.textContent = `${p.nama_perusahaan} (${p.kode_pelanggan})`;
+                        pelangganSelect.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error('Gagal memuat daftar pelanggan:', error);
+                showAlert('danger', 'Gagal memuat daftar pelanggan');
+            }
+            
+            // Update PPN rate when percentage changes
+            document.getElementById('ppnPercentage').addEventListener('change', function() {
+                document.getElementById('ppnRate').textContent = this.value;
+                hitungTotal();
+            });
+            
+            // Pelanggan change event
+            document.getElementById('pelanggan').addEventListener('change', function() {
+                // Reset item table when pelanggan changes
+                document.getElementById('itemTableBody').innerHTML = `
+                    <tr id="emptyRow">
+                        <td colspan="6" class="text-center">Belum ada item. Klik 'Pilih Booking' untuk menambahkan.</td>
+                    </tr>
+                `;
+                
+                // Reset totals
+                document.getElementById('subtotal').textContent = 'Rp 0';
+                document.getElementById('ppnAmount').textContent = 'Rp 0';
+                document.getElementById('grandTotal').textContent = 'Rp 0';
+            });
+            
+            // Pilih Booking button handler
+            document.getElementById('pilihBookingButton').addEventListener('click', async () => {
+                const pelangganId = document.getElementById('pelanggan').value;
+                
+                if (!pelangganId) {
+                    alert('Silakan pilih pelanggan terlebih dahulu.');
+                    return;
+                }
+                
+                try {
+                    // Get uninvoiced bookings for selected customer
+                    const bookings = await window.api.getUninvoicedBookings(pelangganId);
+                    
+                    const bookingTableBody = document.getElementById('bookingTableBody');
+                    bookingTableBody.innerHTML = '';
+                    
+                    if (bookings.length > 0) {
+                        bookings.forEach(booking => {
+                            // In real implementation, we would get the tariff from database
+                            // For this example, we use a dummy value
+                            const dummyTarif = booking.jenis_kontainer === '20ft' ? 2500000 : 
+                                               (booking.jenis_kontainer === '40ft' ? 3500000 : 4000000);
+                            
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>
+                                    <input type="checkbox" class="booking-checkbox" data-id="${booking.id}" data-nomor="${booking.nomor_booking}" 
+                                           data-rute="${booking.asal} - ${booking.tujuan}" data-kontainer="${booking.jenis_kontainer}" data-tarif="${dummyTarif}">
+                                </td>
+                                <td>${booking.nomor_booking}</td>
+                                <td>${formatDateDisplay(booking.tanggal_booking)}</td>
+                                <td>${booking.asal} - ${booking.tujuan}</td>
+                                <td>${booking.jenis_kontainer}</td>
+                                <td>${formatRupiah(dummyTarif)}</td>
+                            `;
+                            
+                            bookingTableBody.appendChild(row);
+                        });
+                    } else {
+                        bookingTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada booking yang tersedia.</td></tr>';
+                    }
+                    
+                    // Show the modal
+                    const pilihBookingModal = new bootstrap.Modal(document.getElementById('pilihBookingModal'));
+                    pilihBookingModal.show();
+                    
+                    // Select all booking checkbox handler
+                    document.getElementById('selectAllBooking').addEventListener('change', function() {
+                        const checkboxes = document.querySelectorAll('.booking-checkbox');
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                    });
+                } catch (error) {
+                    console.error('Gagal memuat booking:', error);
+                    showAlert('danger', 'Gagal memuat data booking');
+                }
+            });
+            
+            // Tambah Item button handler
+            document.getElementById('tambahItemButton').addEventListener('click', () => {
+                const selectedBookings = document.querySelectorAll('.booking-checkbox:checked');
+                
+                if (selectedBookings.length === 0) {
+                    alert('Silakan pilih minimal satu booking.');
+                    return;
+                }
+                
+                // Remove empty row if exists
+                const emptyRow = document.getElementById('emptyRow');
+                if (emptyRow) {
+                    emptyRow.remove();
+                }
+                
+                // Add selected bookings to invoice items
+                const itemTableBody = document.getElementById('itemTableBody');
+                
+                selectedBookings.forEach(checkbox => {
+                    const bookingId = checkbox.getAttribute('data-id');
+                    const nomorBooking = checkbox.getAttribute('data-nomor');
+                    const rute = checkbox.getAttribute('data-rute');
+                    const kontainer = checkbox.getAttribute('data-kontainer');
+                    const tarif = parseFloat(checkbox.getAttribute('data-tarif'));
+                    
+                    // Check if item already exists
+                    const existingItem = document.querySelector(`tr[data-booking-id="${bookingId}"]`);
+                    if (existingItem) {
+                        // Item already exists, skip
+                        return;
+                    }
+                    
+                    // Generate unique row ID
+                    const rowId = 'item-' + new Date().getTime() + '-' + Math.floor(Math.random() * 1000);
+                    
+                    // Add new row
+                    const newRow = document.createElement('tr');
+                    newRow.setAttribute('data-booking-id', bookingId);
+                    newRow.setAttribute('id', rowId);
+                    newRow.setAttribute('data-amount', tarif);
+                    
+                    const rowNum = itemTableBody.children.length + 1;
+                    
+                    newRow.innerHTML = `
+                        <td>${rowNum}</td>
+                        <td>${nomorBooking}</td>
+                        <td>
+                            <input type="text" class="form-control form-control-sm item-desc" value="Jasa Trucking Kontainer ${kontainer}" data-booking-id="${bookingId}">
+                        </td>
+                        <td>${rute}</td>
+                        <td>${formatRupiah(tarif)}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger btn-remove-item" data-row-id="${rowId}">
+                                <i class='bx bx-trash'></i>
+                            </button>
+                        </td>
+                    `;
+                    
+                    itemTableBody.appendChild(newRow);
+                });
+                
+                // Close the modal
+                bootstrap.Modal.getInstance(document.getElementById('pilihBookingModal')).hide();
+                
+                // Recalculate totals
+                hitungTotal();
+                
+                // Setup remove item button handlers
+                setupRemoveItemHandlers();
+            });
+            
+            // Setup remove item button handlers
+            function setupRemoveItemHandlers() {
+                document.querySelectorAll('.btn-remove-item').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const rowId = this.getAttribute('data-row-id');
+                        const row = document.getElementById(rowId);
+                        
+                        if (row) {
+                            row.remove();
+                            
+                            // Update row numbers
+                            const rows = document.querySelectorAll('#itemTableBody tr:not(#emptyRow)');
+                            rows.forEach((row, index) => {
+                                row.cells[0].textContent = index + 1;
+                            });
+                            
+                            // If no items left, add empty row
+                            if (rows.length === 0) {
+                                document.getElementById('itemTableBody').innerHTML = `
+                                    <tr id="emptyRow">
+                                        <td colspan="6" class="text-center">Belum ada item. Klik 'Pilih Booking' untuk menambahkan.</td>
+                                    </tr>
+                                `;
+                            }
+                            
+                            // Recalculate totals
+                            hitungTotal();
+                        }
+                    });
+                });
+            }
+            
+            // Calculate totals
+            function hitungTotal() {
+                const rows = document.querySelectorAll('#itemTableBody tr:not(#emptyRow)');
+                let subtotal = 0;
+                
+                rows.forEach(row => {
+                    subtotal += parseFloat(row.getAttribute('data-amount') || 0);
+                });
+                
+                const ppnRate = parseFloat(document.getElementById('ppnPercentage').value);
+                const ppnAmount = subtotal * (ppnRate / 100);
+                const grandTotal = subtotal + ppnAmount;
+                
+                document.getElementById('subtotal').textContent = formatRupiah(subtotal);
+                document.getElementById('ppnAmount').textContent = formatRupiah(ppnAmount);
+                document.getElementById('grandTotal').textContent = formatRupiah(grandTotal);
+            }
+            
+            // Reset button handler
+            document.getElementById('resetButton').addEventListener('click', () => {
+                const confirmed = confirm('Apakah Anda yakin ingin mereset formulir?');
+                if (confirmed) {
+                    // Reset all form fields except nomor invoice
+                    document.getElementById('tanggalInvoice').value = formatDateInput(new Date());
+                    document.getElementById('tanggalJatuhTempo').value = formatDateInput(dueDate);
+                    document.getElementById('pelanggan').value = '';
+                    document.getElementById('ppnPercentage').value = '11';
+                    document.getElementById('ppnRate').textContent = '11';
+                    document.getElementById('catatan').value = '';
+                    
+                    // Reset item table
+                    document.getElementById('itemTableBody').innerHTML = `
+                        <tr id="emptyRow">
+                            <td colspan="6" class="text-center">Belum ada item. Klik 'Pilih Booking' untuk menambahkan.</td>
+                        </tr>
+                    `;
+                    
+                    // Reset totals
+                    document.getElementById('subtotal').textContent = 'Rp 0';
+                    document.getElementById('ppnAmount').textContent = 'Rp 0';
+                    document.getElementById('grandTotal').textContent = 'Rp 0';
+                }
+            });
+            
+            // Form submission handler
+            document.getElementById('invoiceForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Validasi form
+                const form = e.target;
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+                
+                // Check if there are items in the invoice
+                const items = document.querySelectorAll('#itemTableBody tr:not(#emptyRow)');
+                if (items.length === 0) {
+                    alert('Silakan tambahkan minimal satu item invoice.');
+                    return;
+                }
+                
+                // Tampilkan spinner dan nonaktifkan tombol
+                const submitButton = document.getElementById('submitButton');
+                const submitSpinner = document.getElementById('submitSpinner');
+                submitButton.disabled = true;
+                submitSpinner.classList.remove('d-none');
+                
+                try {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    
+                    // Calculate totals
+                    let subtotal = 0;
+                    const rows = document.querySelectorAll('#itemTableBody tr:not(#emptyRow)');
+                    rows.forEach(row => {
+                        subtotal += parseFloat(row.getAttribute('data-amount') || 0);
+                    });
+                    
+                    const ppnRate = parseFloat(document.getElementById('ppnPercentage').value);
+                    const ppnAmount = subtotal * (ppnRate / 100);
+                    const grandTotal = subtotal + ppnAmount;
+                    
+                    // Prepare invoice details
+                    const details = [];
+                    rows.forEach(row => {
+                        const bookingId = row.getAttribute('data-booking-id');
+                        const deskripsi = row.querySelector('.item-desc').value;
+                        const jumlah = parseFloat(row.getAttribute('data-amount'));
+                        
+                        details.push({
+                            booking_order_id: bookingId,
+                            deskripsi: deskripsi,
+                            jumlah: jumlah
+                        });
+                    });
+                    
+                    // Prepare invoice data
+                    const invoiceData = {
+                        nomor_invoice: document.getElementById('nomorInvoice').value,
+                        tanggal_invoice: document.getElementById('tanggalInvoice').value,
+                        pelanggan_id: document.getElementById('pelanggan').value,
+                        total_tagihan: subtotal,
+                        ppn: ppnAmount,
+                        grand_total: grandTotal,
+                        tanggal_jatuh_tempo: document.getElementById('tanggalJatuhTempo').value,
+                        catatan: document.getElementById('catatan').value,
+                        dibuat_oleh: user.id,
+                        details: details
+                    };
+                    
+                    const result = await window.api.addInvoice(invoiceData);
+                    
+                    if (result && result.id) {
+                        showAlert('success', 'Invoice berhasil disimpan');
+                        
+                        // Redirect ke halaman detail invoice setelah 1 detik
+                        setTimeout(() => {
+                            window.location.href = `invoice-detail.html?id=${result.id}`;
+                        }, 1000);
+                    } else {
+                        throw new Error('Gagal menyimpan invoice');
+                    }
+                } catch (error) {
+                    console.error('Gagal menyimpan invoice:', error);
+                    showAlert('danger', 'Gagal menyimpan invoice');
+                    
+                    // Sembunyikan spinner dan aktifkan tombol kembali
+                    submitButton.disabled = false;
+                    submitSpinner.classList.add('d-none');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

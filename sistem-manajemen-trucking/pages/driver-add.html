@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Driver - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Tambah Driver Baru</h2>
+                    <a href="driver-list.html" class="btn btn-outline-secondary">
+                        <i class='bx bx-arrow-back'></i> Kembali
+                    </a>
+                </div>
+
+                <!-- Form Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form id="driverForm" class="needs-validation" novalidate>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Pribadi</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="kodeDriver" class="form-label">Kode Driver</label>
+                                    <input type="text" class="form-control" id="kodeDriver" placeholder="Masukkan kode driver" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan kode driver
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label for="namaLengkap" class="form-label">Nama Lengkap</label>
+                                    <input type="text" class="form-control" id="namaLengkap" placeholder="Masukkan nama lengkap" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan nama lengkap
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="tanggalLahir" class="form-label">Tanggal Lahir</label>
+                                    <input type="date" class="form-control" id="tanggalLahir" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan tanggal lahir
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="noTelepon" class="form-label">No. Telepon</label>
+                                    <input type="tel" class="form-control" id="noTelepon" placeholder="Masukkan nomor telepon" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan nomor telepon
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="tanggalBergabung" class="form-label">Tanggal Bergabung</label>
+                                    <input type="date" class="form-control" id="tanggalBergabung" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan tanggal bergabung
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="alamat" class="form-label">Alamat</label>
+                                    <textarea class="form-control" id="alamat" rows="2" placeholder="Masukkan alamat lengkap" required></textarea>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan alamat
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Lisensi</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="noKTP" class="form-label">No. KTP</label>
+                                    <input type="text" class="form-control" id="noKTP" placeholder="Masukkan nomor KTP" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan nomor KTP
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="noSIM" class="form-label">No. SIM</label>
+                                    <input type="text" class="form-control" id="noSIM" placeholder="Masukkan nomor SIM" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan nomor SIM
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="tipeSIM" class="form-label">Tipe SIM</label>
+                                    <select class="form-select" id="tipeSIM" required>
+                                        <option value="">Pilih Tipe SIM</option>
+                                        <option value="SIM A">SIM A</option>
+                                        <option value="SIM B1">SIM B1</option>
+                                        <option value="SIM B2">SIM B2</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih tipe SIM
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select class="form-select" id="status" required>
+                                        <option value="aktif" selected>Aktif</option>
+                                        <option value="tidak aktif">Tidak Aktif</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih status
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="foto" class="form-label">Foto Driver</label>
+                                    <input type="file" class="form-control" id="foto" accept="image/*">
+                                    <div class="form-text">Upload foto driver (opsional). Format: JPG, PNG, ukuran maks: 2MB</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="catatan" class="form-label">Catatan</label>
+                                <textarea class="form-control" id="catatan" rows="3" placeholder="Catatan tambahan (opsional)"></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button" id="resetButton" class="btn btn-outline-secondary">Reset</button>
+                                <button type="submit" id="submitButton" class="btn btn-primary">
+                                    <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    Simpan Driver
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Generate kode driver
+            const today = new Date();
+            const year = today.getFullYear().toString().substr(-2);
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            const kode = `DRV${year}${month}${random}`;
+            
+            document.getElementById('kodeDriver').value = kode;
+            
+            // Set default dates
+            document.getElementById('tanggalBergabung').value = formatDateInput(today);
+            
+            // Reset button handler
+            document.getElementById('resetButton').addEventListener('click', () => {
+                const confirmed = confirm('Apakah Anda yakin ingin mereset formulir?');
+                if (confirmed) {
+                    document.getElementById('driverForm').reset();
+                    
+                    // Keep the generated kode
+                    document.getElementById('kodeDriver').value = kode;
+                    document.getElementById('tanggalBergabung').value = formatDateInput(today);
+                    document.getElementById('status').value = 'aktif';
+                }
+            });
+            
+            // Form submission handler
+            document.getElementById('driverForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Validasi form
+                const form = e.target;
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+                
+                // Tampilkan spinner dan nonaktifkan tombol
+                const submitButton = document.getElementById('submitButton');
+                const submitSpinner = document.getElementById('submitSpinner');
+                submitButton.disabled = true;
+                submitSpinner.classList.remove('d-none');
+                
+                try {
+                    // Handle foto upload if any
+                    let fotoBase64 = null;
+                    const fotoInput = document.getElementById('foto');
+                    if (fotoInput.files.length > 0) {
+                        fotoBase64 = await readFileAsBase64(fotoInput.files[0]);
+                    }
+                    
+                    const driverData = {
+                        kode_driver: document.getElementById('kodeDriver').value,
+                        nama_lengkap: document.getElementById('namaLengkap').value,
+                        alamat: document.getElementById('alamat').value,
+                        no_ktp: document.getElementById('noKTP').value,
+                        no_sim: document.getElementById('noSIM').value,
+                        tipe_sim: document.getElementById('tipeSIM').value,
+                        tanggal_lahir: document.getElementById('tanggalLahir').value,
+                        no_telepon: document.getElementById('noTelepon').value,
+                        tanggal_bergabung: document.getElementById('tanggalBergabung').value,
+                        status: document.getElementById('status').value,
+                        foto: fotoBase64,
+                        catatan: document.getElementById('catatan').value
+                    };
+                    
+                    const result = await window.api.addDriver(driverData);
+                    
+                    if (result && result.id) {
+                        showAlert('success', 'Driver berhasil disimpan');
+                        
+                        // Redirect ke halaman daftar driver setelah 1 detik
+                        setTimeout(() => {
+                            window.location.href = 'driver-list.html';
+                        }, 1000);
+                    } else {
+                        throw new Error('Gagal menyimpan driver');
+                    }
+                } catch (error) {
+                    console.error('Gagal menyimpan driver:', error);
+                    showAlert('danger', 'Gagal menyimpan driver');
+                    
+                    // Sembunyikan spinner dan aktifkan tombol kembali
+                    submitButton.disabled = false;
+                    submitSpinner.classList.add('d-none');
+                }
+            });
+            
+            // Function to read file as base64
+            async function readFileAsBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

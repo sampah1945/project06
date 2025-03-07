@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Armada - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Tambah Armada Baru</h2>
+                    <a href="armada-list.html" class="btn btn-outline-secondary">
+                        <i class='bx bx-arrow-back'></i> Kembali
+                    </a>
+                </div>
+
+                <!-- Form Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form id="armadaForm" class="needs-validation" novalidate>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Kendaraan</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="kodeArmada" class="form-label">Kode Armada</label>
+                                    <input type="text" class="form-control" id="kodeArmada" placeholder="Masukkan kode armada" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan kode armada
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="nomorPolisi" class="form-label">Nomor Polisi</label>
+                                    <input type="text" class="form-control" id="nomorPolisi" placeholder="Masukkan nomor polisi" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan nomor polisi
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="jenisKendaraan" class="form-label">Jenis Kendaraan</label>
+                                    <select class="form-select" id="jenisKendaraan" required>
+                                        <option value="">Pilih Jenis Kendaraan</option>
+                                        <option value="Truk Box">Truk Box</option>
+                                        <option value="Truk Fuso">Truk Fuso</option>
+                                        <option value="Truk Container">Truk Container</option>
+                                        <option value="Truk Trailer">Truk Trailer</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih jenis kendaraan
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="merk" class="form-label">Merk</label>
+                                    <input type="text" class="form-control" id="merk" placeholder="Masukkan merk kendaraan" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan merk kendaraan
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="model" class="form-label">Model</label>
+                                    <input type="text" class="form-control" id="model" placeholder="Masukkan model kendaraan" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan model kendaraan
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="tahunPembuatan" class="form-label">Tahun Pembuatan</label>
+                                    <input type="number" class="form-control" id="tahunPembuatan" placeholder="Masukkan tahun pembuatan" min="1990" max="2025" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan tahun pembuatan
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="kapasitas" class="form-label">Kapasitas</label>
+                                    <input type="text" class="form-control" id="kapasitas" placeholder="Masukkan kapasitas" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan kapasitas
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="tanggalRegistrasi" class="form-label">Tanggal Registrasi</label>
+                                    <input type="date" class="form-control" id="tanggalRegistrasi" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan tanggal registrasi
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select class="form-select" id="status" required>
+                                        <option value="aktif" selected>Aktif</option>
+                                        <option value="tidak aktif">Tidak Aktif</option>
+                                        <option value="perbaikan">Dalam Perbaikan</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih status
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Pemeliharaan</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="terakhirService" class="form-label">Terakhir Service</label>
+                                    <input type="date" class="form-control" id="terakhirService">
+                                    <div class="form-text">Opsional, kosongkan jika belum pernah service</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="jadwalService" class="form-label">Jadwal Service Berikutnya</label>
+                                    <input type="date" class="form-control" id="jadwalService">
+                                    <div class="form-text">Opsional, kosongkan jika belum dijadwalkan</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="catatan" class="form-label">Catatan</label>
+                                <textarea class="form-control" id="catatan" rows="3" placeholder="Catatan tambahan (opsional)"></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button" id="resetButton" class="btn btn-outline-secondary">Reset</button>
+                                <button type="submit" id="submitButton" class="btn btn-primary">
+                                    <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    Simpan Armada
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Generate kode armada
+            const today = new Date();
+            const year = today.getFullYear().toString().substr(-2);
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            const kode = `ARM${year}${month}${random}`;
+            
+            document.getElementById('kodeArmada').value = kode;
+            
+            // Set default dates
+            document.getElementById('tanggalRegistrasi').value = formatDateInput(today);
+            
+            // Set default year
+            document.getElementById('tahunPembuatan').value = today.getFullYear();
+            
+            // Reset button handler
+            document.getElementById('resetButton').addEventListener('click', () => {
+                const confirmed = confirm('Apakah Anda yakin ingin mereset formulir?');
+                if (confirmed) {
+                    document.getElementById('armadaForm').reset();
+                    
+                    // Keep the generated kode and default dates
+                    document.getElementById('kodeArmada').value = kode;
+                    document.getElementById('tanggalRegistrasi').value = formatDateInput(today);
+                    document.getElementById('tahunPembuatan').value = today.getFullYear();
+                    document.getElementById('status').value = 'aktif';
+                }
+            });
+            
+            // Form submission handler
+            document.getElementById('armadaForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Validasi form
+                const form = e.target;
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+                
+                // Tampilkan spinner dan nonaktifkan tombol
+                const submitButton = document.getElementById('submitButton');
+                const submitSpinner = document.getElementById('submitSpinner');
+                submitButton.disabled = true;
+                submitSpinner.classList.remove('d-none');
+                
+                try {
+                    const armadaData = {
+                        kode_armada: document.getElementById('kodeArmada').value,
+                        nomor_polisi: document.getElementById('nomorPolisi').value,
+                        jenis_kendaraan: document.getElementById('jenisKendaraan').value,
+                        merk: document.getElementById('merk').value,
+                        model: document.getElementById('model').value,
+                        tahun_pembuatan: document.getElementById('tahunPembuatan').value,
+                        kapasitas: document.getElementById('kapasitas').value,
+                        tanggal_registrasi: document.getElementById('tanggalRegistrasi').value,
+                        status: document.getElementById('status').value,
+                        terakhir_service: document.getElementById('terakhirService').value || null,
+                        jadwal_service: document.getElementById('jadwalService').value || null,
+                        catatan: document.getElementById('catatan').value
+                    };
+                    
+                    const result = await window.api.addArmada(armadaData);
+                    
+                    if (result && result.id) {
+                        showAlert('success', 'Armada berhasil disimpan');
+                        
+                        // Redirect ke halaman daftar armada setelah 1 detik
+                        setTimeout(() => {
+                            window.location.href = 'armada-list.html';
+                        }, 1000);
+                    } else {
+                        throw new Error('Gagal menyimpan armada');
+                    }
+                } catch (error) {
+                    console.error('Gagal menyimpan armada:', error);
+                    showAlert('danger', 'Gagal menyimpan armada');
+                    
+                    // Sembunyikan spinner dan aktifkan tombol kembali
+                    submitButton.disabled = false;
+                    submitSpinner.classList.add('d-none');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

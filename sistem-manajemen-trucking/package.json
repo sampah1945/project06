@@ -1,0 +1,52 @@
+{
+    "name": "trucking-management-system",
+    "version": "1.0.0",
+    "description": "Sistem Manajemen Trucking untuk angkutan kontainer",
+    "main": "main.js",
+    "scripts": {
+      "start": "electron .",
+      "build": "electron-builder",
+      "rebuild": "electron-rebuild -f -w sqlite3",
+      "postinstall": "electron-builder install-app-deps"
+    },
+    "author": "PT Trucking Indonesia",
+    "license": "UNLICENSED",
+    "private": true,
+    "dependencies": {
+      "bcryptjs": "^2.4.3",
+      "electron-log": "^4.4.8",
+      "electron-updater": "^5.3.0",
+      "sqlite3": "^5.1.6"
+    },
+    "devDependencies": {
+      "electron": "^22.3.5",
+      "electron-builder": "^24.4.0",
+      "electron-rebuild": "^3.2.9"
+    },
+    "build": {
+      "appId": "com.truckingindonesia.tms",
+      "productName": "Sistem Manajemen Trucking",
+      "directories": {
+        "output": "dist"
+      },
+      "win": {
+        "icon": "assets/icons/icon.ico",
+        "target": [
+          "nsis"
+        ]
+      },
+      "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "shortcutName": "Sistem Manajemen Trucking"
+      },
+      "extraResources": [
+        {
+          "from": "db/schema.sql",
+          "to": "db/schema.sql"
+        }
+      ]
+    }
+  }

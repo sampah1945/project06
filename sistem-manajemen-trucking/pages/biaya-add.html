@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Biaya Operasional - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Tambah Biaya Operasional</h2>
+                    <a href="biaya-list.html" class="btn btn-outline-secondary">
+                        <i class='bx bx-arrow-back'></i> Kembali
+                    </a>
+                </div>
+
+                <!-- Form Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form id="biayaForm" class="needs-validation" novalidate>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <h5 class="card-title">Informasi Biaya</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="penugasan" class="form-label">Penugasan / Booking</label>
+                                    <select class="form-select" id="penugasan">
+                                        <option value="">Pilih Penugasan (Opsional)</option>
+                                        <!-- Opsi akan diisi dengan JavaScript -->
+                                    </select>
+                                    <div class="form-text">Opsional, kosongkan jika biaya tidak terkait penugasan tertentu</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="jenisBiaya" class="form-label">Jenis Biaya</label>
+                                    <select class="form-select" id="jenisBiaya" required>
+                                        <option value="">Pilih Jenis Biaya</option>
+                                        <option value="BBM">BBM</option>
+                                        <option value="Tol">Tol</option>
+                                        <option value="Uang Makan Driver">Uang Makan Driver</option>
+                                        <option value="Biaya Lift On/Off">Biaya Lift On/Off</option>
+                                        <option value="Perbaikan Kendaraan">Perbaikan Kendaraan</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih jenis biaya
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="jumlah" class="form-label">Jumlah Biaya (Rp)</label>
+                                    <input type="number" class="form-control" id="jumlah" placeholder="Masukkan jumlah biaya" min="0" required>
+                                    <div class="invalid-feedback">
+                                        Silakan masukkan jumlah biaya
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="tanggal" class="form-label">Tanggal</label>
+                                    <input type="date" class="form-control" id="tanggal" required>
+                                    <div class="invalid-feedback">
+                                        Silakan pilih tanggal
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="keterangan" class="form-label">Keterangan</label>
+                                <textarea class="form-control" id="keterangan" rows="3" placeholder="Masukkan keterangan biaya"></textarea>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="buktiTransaksi" class="form-label">Bukti Transaksi</label>
+                                <input type="file" class="form-control" id="buktiTransaksi" accept="image/*">
+                                <div class="form-text">Upload foto bukti transaksi (opsional). Format: JPG, PNG, ukuran maks: 2MB</div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button" id="resetButton" class="btn btn-outline-secondary">Reset</button>
+                                <button type="submit" id="submitButton" class="btn btn-primary">
+                                    <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    Simpan Biaya
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Set default date to today
+            const today = new Date();
+            document.getElementById('tanggal').value = formatDateInput(today);
+            
+            // Load penugasan data for select box
+            try {
+                // In a real app, this would be an API call to get active penugasan
+                // For demo purposes, we'll create dummy data
+                const penugasanData = [
+                    { id: 1, booking_no: 'BO2501001', driver: 'John Doe', armada: 'B 1234 XYZ' },
+                    { id: 2, booking_no: 'BO2501002', driver: 'Jane Smith', armada: 'B 5678 ABC' },
+                    { id: 3, booking_no: 'BO2501003', driver: 'Robert Johnson', armada: 'B 9012 DEF' }
+                ];
+                
+                const penugasanSelect = document.getElementById('penugasan');
+                
+                penugasanData.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id;
+                    option.textContent = `${p.booking_no} - ${p.driver} (${p.armada})`;
+                    penugasanSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading penugasan data:', error);
+                showAlert('warning', 'Gagal memuat data penugasan');
+            }
+            
+            // Reset button handler
+            document.getElementById('resetButton').addEventListener('click', () => {
+                const confirmed = confirm('Apakah Anda yakin ingin mereset formulir?');
+                if (confirmed) {
+                    document.getElementById('biayaForm').reset();
+                    
+                    // Reset to default values
+                    document.getElementById('tanggal').value = formatDateInput(today);
+                }
+            });
+            
+            // Form submission handler
+            document.getElementById('biayaForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Validasi form
+                const form = e.target;
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+                
+                // Tampilkan spinner dan nonaktifkan tombol
+                const submitButton = document.getElementById('submitButton');
+                const submitSpinner = document.getElementById('submitSpinner');
+                submitButton.disabled = true;
+                submitSpinner.classList.remove('d-none');
+                
+                try {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    
+                    // Handle bukti transaksi upload if any
+                    let buktiBase64 = null;
+                    const buktiInput = document.getElementById('buktiTransaksi');
+                    if (buktiInput.files.length > 0) {
+                        buktiBase64 = await readFileAsBase64(buktiInput.files[0]);
+                    }
+                    
+                    const biayaData = {
+                        penugasan_id: document.getElementById('penugasan').value || null,
+                        jenis_biaya: document.getElementById('jenisBiaya').value,
+                        jumlah: document.getElementById('jumlah').value,
+                        tanggal: document.getElementById('tanggal').value,
+                        keterangan: document.getElementById('keterangan').value,
+                        bukti_transaksi: buktiBase64,
+                        dibuat_oleh: user.id
+                    };
+                    
+                    const result = await window.api.addBiayaOperasional(biayaData);
+                    
+                    if (result && result.id) {
+                        showAlert('success', 'Biaya operasional berhasil disimpan');
+                        
+                        // Redirect ke halaman daftar biaya setelah 1 detik
+                        setTimeout(() => {
+                            window.location.href = 'biaya-list.html';
+                        }, 1000);
+                    } else {
+                        throw new Error('Gagal menyimpan biaya operasional');
+                    }
+                } catch (error) {
+                    console.error('Gagal menyimpan biaya operasional:', error);
+                    showAlert('danger', 'Gagal menyimpan biaya operasional');
+                    
+                    // Sembunyikan spinner dan aktifkan tombol kembali
+                    submitButton.disabled = false;
+                    submitSpinner.classList.add('d-none');
+                }
+            });
+            
+            // Function to read file as base64
+            async function readFileAsBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

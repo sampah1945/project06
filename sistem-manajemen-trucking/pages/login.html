@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <img src="../assets/images/logo.png" alt="Logo Perusahaan" class="img-fluid mb-3" style="max-height: 80px;">
+                            <h3 class="fw-bold text-primary">Sistem Manajemen Trucking</h3>
+                            <p class="text-muted">Silakan login untuk melanjutkan</p>
+                        </div>
+                        
+                        <form id="loginForm">
+                            <div class="alert alert-danger d-none" id="loginAlert" role="alert">
+                                Username atau password salah
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" placeholder="Masukkan username Anda" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" placeholder="Masukkan password Anda" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100 py-2" id="loginButton">
+                                <span id="loginSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                Login
+                            </button>
+                        </form>
+                        
+                        <div class="text-center mt-4">
+                            <p class="text-muted small">
+                                &copy; 2025 PT Trucking Indonesia. All rights reserved.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const loginButton = document.getElementById('loginButton');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const loginAlert = document.getElementById('loginAlert');
+            
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Tampilkan spinner dan nonaktifkan tombol
+                loginButton.disabled = true;
+                loginSpinner.classList.remove('d-none');
+                loginAlert.classList.add('d-none');
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                try {
+                    const result = await window.api.login({
+                        username,
+                        password
+                    });
+                    
+                    if (result.success) {
+                        // Simpan data user ke localStorage
+                        localStorage.setItem('user', JSON.stringify(result.user));
+                        
+                        // Redirect ke dashboard
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        throw new Error('Login gagal');
+                    }
+                } catch (error) {
+                    // Tampilkan pesan error
+                    loginAlert.textContent = error.message || 'Username atau password salah';
+                    loginAlert.classList.remove('d-none');
+                    
+                    // Sembunyikan spinner dan aktifkan tombol kembali
+                    loginButton.disabled = false;
+                    loginSpinner.classList.add('d-none');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

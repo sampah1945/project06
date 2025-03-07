@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Profitabilitas - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="../assets/css/chart.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Laporan Profitabilitas</h2>
+                    <div>
+                        <button id="printReport" class="btn btn-outline-primary me-2">
+                            <i class='bx bx-printer'></i> Cetak
+                        </button>
+                        <button id="exportExcel" class="btn btn-success">
+                            <i class='bx bx-spreadsheet'></i> Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter</h5>
+                        <form id="filterForm">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="filterStartDate" class="form-label">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="filterStartDate" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="filterEndDate" class="form-label">Tanggal Selesai</label>
+                                    <input type="date" class="form-control" id="filterEndDate" required>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">Tampilkan Laporan</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Pendapatan</h6>
+                                        <h3 class="fw-bold" id="totalPendapatan">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-success text-white rounded p-3">
+                                        <i class='bx bxs-dollar-circle fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Biaya</h6>
+                                        <h3 class="fw-bold" id="totalBiaya">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-danger text-white rounded p-3">
+                                        <i class='bx bxs-wallet fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Profit</h6>
+                                        <h3 class="fw-bold" id="totalProfit">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-primary text-white rounded p-3">
+                                        <i class='bx bxs-chart fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Profitabilitas per Jenis Layanan</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="servicesProfitChart" height="280"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Margin Profit per Bulan</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="monthlyMarginChart" height="280"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profit Table Section -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0">Rincian Profitabilitas per Booking</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="profitTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No. Booking</th>
+                                        <th>Pelanggan</th>
+                                        <th>Layanan</th>
+                                        <th>Rute</th>
+                                        <th>Kontainer</th>
+                                        <th>Pendapatan</th>
+                                        <th>Biaya</th>
+                                        <th>Profit</th>
+                                        <th>Margin (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fw-bold">
+                                        <td colspan="5">Total</td>
+                                        <td id="footerPendapatan">Rp 0</td>
+                                        <td id="footerBiaya">Rp 0</td>
+                                        <td id="footerProfit">Rp 0</td>
+                                        <td id="footerMargin">0%</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Profit Section -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Top 5 Booking Profit Tertinggi</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>No. Booking</th>
+                                                <th>Pelanggan</th>
+                                                <th>Profit</th>
+                                                <th>Margin</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="topProfitTable">
+                                            <!-- Data akan diisi dengan JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Top 5 Booking Profit Terendah</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>No. Booking</th>
+                                                <th>Pelanggan</th>
+                                                <th>Profit</th>
+                                                <th>Margin</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="lowProfitTable">
+                                            <!-- Data akan diisi dengan JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/chart.min.js"></script>
+    <script src="../assets/js/xlsx.full.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set default date range (current month)
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            document.getElementById('filterStartDate').value = formatDateInput(firstDayOfMonth);
+            document.getElementById('filterEndDate').value = formatDateInput(today);
+            
+            // Filter form handling
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await loadProfitData();
+            });
+            
+            // Print report button
+            document.getElementById('printReport').addEventListener('click', () => {
+                window.print();
+            });
+            
+            // Export to Excel button
+            document.getElementById('exportExcel').addEventListener('click', () => {
+                exportToExcel();
+            });
+            
+            // Initialize DataTable
+            const profitTable = $('#profitTable').DataTable({
+                responsive: true,
+                order: [[7, 'desc']] // Sort by profit column descending
+            });
+            
+            // Initial loading of profit data
+            await loadProfitData();
+            
+            // Function to load profit data
+            async function loadProfitData() {
+                try {
+                    const startDate = document.getElementById('filterStartDate').value;
+                    const endDate = document.getElementById('filterEndDate').value;
+                    
+                    if (!startDate || !endDate) {
+                        showAlert('warning', 'Silakan pilih rentang tanggal terlebih dahulu');
+                        return;
+                    }
+                    
+                    const profitData = await window.api.getLaporanProfit({
+                        startDate,
+                        endDate
+                    });
+                    
+                    // Process the data
+                    let totalPendapatan = 0;
+                    let totalBiaya = 0;
+                    let totalProfit = 0;
+                    
+                    // Group data by service type for chart
+                    const serviceGroups = {};
+                    const monthlyData = {};
+                    
+                    // Clear existing data
+                    profitTable.clear();
+                    
+                    // Add data to table
+                    profitData.forEach(item => {
+                        totalPendapatan += item.pendapatan;
+                        totalBiaya += item.biaya;
+                        totalProfit += item.profit;
+                        
+                        // Add to service groups
+                        if (!serviceGroups[item.nama_layanan]) {
+                            serviceGroups[item.nama_layanan] = {
+                                pendapatan: 0,
+                                biaya: 0,
+                                profit: 0
+                            };
+                        }
+                        serviceGroups[item.nama_layanan].pendapatan += item.pendapatan;
+                        serviceGroups[item.nama_layanan].biaya += item.biaya;
+                        serviceGroups[item.nama_layanan].profit += item.profit;
+                        
+                        // Extract month for monthly data
+                        const invoiceDate = new Date(item.tanggal_invoice);
+                        const monthKey = `${invoiceDate.getFullYear()}-${invoiceDate.getMonth() + 1}`;
+                        if (!monthlyData[monthKey]) {
+                            monthlyData[monthKey] = {
+                                pendapatan: 0,
+                                biaya: 0,
+                                profit: 0,
+                                month: new Date(invoiceDate.getFullYear(), invoiceDate.getMonth(), 1)
+                                    .toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })
+                            };
+                        }
+                        monthlyData[monthKey].pendapatan += item.pendapatan;
+                        monthlyData[monthKey].biaya += item.biaya;
+                        monthlyData[monthKey].profit += item.profit;
+                        
+                        // Add to table
+                        profitTable.row.add([
+                            `<a href="booking-detail.html?id=${item.booking_id}" class="text-decoration-none fw-bold">${item.nomor_booking}</a>`,
+                            item.nama_perusahaan,
+                            item.nama_layanan,
+                            `${item.asal} - ${item.tujuan}`,
+                            item.jenis_kontainer,
+                            formatRupiah(item.pendapatan),
+                            formatRupiah(item.biaya),
+                            formatRupiah(item.profit),
+                            `${item.margin_profit_persen}%`
+                        ]);
+                    });
+                    
+                    // Redraw the table
+                    profitTable.draw();
+                    
+                    // Update summary cards
+                    document.getElementById('totalPendapatan').textContent = formatRupiah(totalPendapatan);
+                    document.getElementById('totalBiaya').textContent = formatRupiah(totalBiaya);
+                    document.getElementById('totalProfit').textContent = formatRupiah(totalProfit);
+                    
+                    // Update table footer
+                    document.getElementById('footerPendapatan').textContent = formatRupiah(totalPendapatan);
+                    document.getElementById('footerBiaya').textContent = formatRupiah(totalBiaya);
+                    document.getElementById('footerProfit').textContent = formatRupiah(totalProfit);
+                    
+                    const avgMargin = totalPendapatan > 0 ? (totalProfit / totalPendapatan * 100).toFixed(2) : 0;
+                    document.getElementById('footerMargin').textContent = `${avgMargin}%`;
+                    
+                    // Update top profit tables
+                    const sortedByProfit = [...profitData].sort((a, b) => b.profit - a.profit);
+                    
+                    // Top 5 highest profit
+                    const topProfitTable = document.getElementById('topProfitTable');
+                    topProfitTable.innerHTML = '';
+                    
+                    sortedByProfit.slice(0, 5).forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><a href="booking-detail.html?id=${item.booking_id}" class="text-decoration-none">${item.nomor_booking}</a></td>
+                            <td>${item.nama_perusahaan}</td>
+                            <td>${formatRupiah(item.profit)}</td>
+                            <td>${item.margin_profit_persen}%</td>
+                        `;
+                        topProfitTable.appendChild(row);
+                    });
+                    
+                    // Top 5 lowest profit
+                    const lowProfitTable = document.getElementById('lowProfitTable');
+                    lowProfitTable.innerHTML = '';
+                    
+                    sortedByProfit.slice(-5).reverse().forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><a href="booking-detail.html?id=${item.booking_id}" class="text-decoration-none">${item.nomor_booking}</a></td>
+                            <td>${item.nama_perusahaan}</td>
+                            <td>${formatRupiah(item.profit)}</td>
+                            <td>${item.margin_profit_persen}%</td>
+                        `;
+                        lowProfitTable.appendChild(row);
+                    });
+                    
+                    // Create chart for profit by service type
+                    const serviceLabels = Object.keys(serviceGroups);
+                    const serviceProfits = serviceLabels.map(label => serviceGroups[label].profit);
+                    const servicePendapatan = serviceLabels.map(label => serviceGroups[label].pendapatan);
+                    const serviceBiaya = serviceLabels.map(label => serviceGroups[label].biaya);
+                    
+                    const serviceCtx = document.getElementById('servicesProfitChart').getContext('2d');
+                    if (window.servicesProfitChartInstance) {
+                        window.servicesProfitChartInstance.destroy();
+                    }
+                    
+                    window.servicesProfitChartInstance = new Chart(serviceCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: serviceLabels,
+                            datasets: [
+                                {
+                                    label: 'Pendapatan',
+                                    backgroundColor: 'rgba(78, 115, 223, 0.6)',
+                                    data: servicePendapatan
+                                },
+                                {
+                                    label: 'Biaya',
+                                    backgroundColor: 'rgba(231, 74, 59, 0.6)',
+                                    data: serviceBiaya
+                                },
+                                {
+                                    label: 'Profit',
+                                    backgroundColor: 'rgba(28, 200, 138, 0.6)',
+                                    data: serviceProfits
+                                }
+                            ]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function(value) {
+                                            return formatRupiah(value);
+                                        }
+                                    }
+                                }]
+                            },
+                            tooltips: {
+                                callbacks: {
+                                    label: function(tooltipItem, data) {
+                                        return data.datasets[tooltipItem.datasetIndex].label + ': ' + formatRupiah(tooltipItem.yLabel);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Create chart for monthly margin
+                    const sortedMonths = Object.values(monthlyData).sort((a, b) => {
+                        return new Date(a.month) - new Date(b.month);
+                    });
+                    
+                    const monthLabels = sortedMonths.map(item => item.month);
+                    const monthMargins = sortedMonths.map(item => {
+                        return item.pendapatan > 0 ? (item.profit / item.pendapatan * 100).toFixed(2) : 0;
+                    });
+                    
+                    const monthCtx = document.getElementById('monthlyMarginChart').getContext('2d');
+                    if (window.monthlyMarginChartInstance) {
+                        window.monthlyMarginChartInstance.destroy();
+                    }
+                    
+                    window.monthlyMarginChartInstance = new Chart(monthCtx, {
+                        type: 'line',
+                        data: {
+                            labels: monthLabels,
+                            datasets: [{
+                                label: 'Margin Profit (%)',
+                                backgroundColor: 'rgba(54, 185, 204, 0.2)',
+                                borderColor: 'rgba(54, 185, 204, 1)',
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(54, 185, 204, 1)',
+                                pointRadius: 4,
+                                data: monthMargins
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function(value) {
+                                            return value + '%';
+                                        }
+                                    }
+                                }]
+                            },
+                            tooltips: {
+                                callbacks: {
+                                    label: function(tooltipItem, data) {
+                                        return data.datasets[tooltipItem.datasetIndex].label + ': ' + tooltipItem.yLabel + '%';
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    
+                } catch (error) {
+                    console.error('Error loading profit data:', error);
+                    showAlert('danger', 'Gagal memuat data profitabilitas');
+                }
+            }
+            
+            // Function to export data to Excel
+            function exportToExcel() {
+                try {
+                    const startDate = document.getElementById('filterStartDate').value;
+                    const endDate = document.getElementById('filterEndDate').value;
+                    
+                    // Create a new workbook
+                    const wb = XLSX.utils.book_new();
+                    
+                    // Extract data from DataTable
+                    const tableData = profitTable.data().toArray();
+                    
+                    // Create headers
+                    const headers = ['No. Booking', 'Pelanggan', 'Layanan', 'Rute', 'Kontainer', 'Pendapatan', 'Biaya', 'Profit', 'Margin (%)'];
+                    
+                    // Clean data (remove HTML tags)
+                    const cleanData = tableData.map(row => {
+                        return row.map(cell => {
+                            // Create a temporary div to parse HTML and get text content
+                            const div = document.createElement('div');
+                            div.innerHTML = cell;
+                            // For Rupiah values, remove the Rp prefix and dots
+                            let text = div.textContent || div.innerText || '';
+                            if (text.startsWith('Rp ')) {
+                                text = text.replace('Rp ', '').replace(/\./g, '');
+                            }
+                            return text;
+                        });
+                    });
+                    
+                    // Add headers to data
+                    const excelData = [headers, ...cleanData];
+                    
+                    // Create a worksheet
+                    const ws = XLSX.utils.aoa_to_sheet(excelData);
+                    
+                    // Add worksheet to workbook
+                    XLSX.utils.book_append_sheet(wb, ws, 'Laporan Profitabilitas');
+                    
+                    // Generate Excel file with a specific name
+                    const fileName = `Laporan_Profitabilitas_${startDate}_sampai_${endDate}.xlsx`;
+                    XLSX.writeFile(wb, fileName);
+                    
+                } catch (error) {
+                    console.error('Error exporting to Excel:', error);
+                    showAlert('danger', 'Gagal mengekspor ke Excel');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

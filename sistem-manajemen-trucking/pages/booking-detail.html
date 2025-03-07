@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Booking - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Detail Booking</h2>
+                    <div>
+                        <a href="booking-list.html" class="btn btn-outline-secondary me-2">
+                            <i class='bx bx-arrow-back'></i> Kembali
+                        </a>
+                        <button class="btn btn-outline-primary" id="printButton">
+                            <i class='bx bx-printer'></i> Cetak
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Detail Header -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h5 class="fw-bold mb-3" id="nomorBooking">No. Booking: -</h5>
+                                <p class="mb-1"><i class='bx bx-calendar me-2'></i> <span id="tanggalBooking">Tanggal: -</span></p>
+                                <p class="mb-1"><i class='bx bx-building me-2'></i> <span id="namaPelanggan">Pelanggan: -</span></p>
+                                <p class="mb-0"><i class='bx bx-package me-2'></i> <span id="jenisKontainer">Kontainer: -</span></p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <h5 class="fw-bold mb-3">Status: <span id="statusBooking" class="badge bg-secondary">-</span></h5>
+                                <p class="mb-1"><i class='bx bx-map me-2'></i> <span id="rutePengiriman">Rute: -</span></p>
+                                <p class="mb-1"><i class='bx bx-time me-2'></i> <span id="tanggalPickup">Pickup: -</span></p>
+                                <p class="mb-0"><i class='bx bx-time-five me-2'></i> <span id="tanggalDelivery">Delivery: -</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs mb-4" id="bookingTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail-tab-pane" type="button" role="tab" aria-controls="detail-tab-pane" aria-selected="true">Informasi Detail</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="penugasan-tab" data-bs-toggle="tab" data-bs-target="#penugasan-tab-pane" type="button" role="tab" aria-controls="penugasan-tab-pane" aria-selected="false">Penugasan & Tracking</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="biaya-tab" data-bs-toggle="tab" data-bs-target="#biaya-tab-pane" type="button" role="tab" aria-controls="biaya-tab-pane" aria-selected="false">Biaya Operasional</button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="bookingTabContent">
+                    <!-- Detail Tab -->
+                    <div class="tab-pane fade show active" id="detail-tab-pane" role="tabpanel" aria-labelledby="detail-tab" tabindex="0">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4">Informasi Booking</h5>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Nomor Booking</label>
+                                            <p class="fw-bold" id="detailNomorBooking">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Tanggal Booking</label>
+                                            <p id="detailTanggalBooking">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Jenis Layanan</label>
+                                            <p id="detailJenisLayanan">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Pelanggan</label>
+                                            <p id="detailPelanggan">-</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Jenis Kontainer</label>
+                                            <p id="detailJenisKontainer">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Nomor Kontainer</label>
+                                            <p id="detailNomorKontainer">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Nomor Seal</label>
+                                            <p id="detailNomorSeal">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Status</label>
+                                            <p id="detailStatus">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5 class="card-title mb-4">Informasi Pengiriman</h5>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Lokasi Asal</label>
+                                            <p id="detailLokasiAsal">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Tanggal Pickup</label>
+                                            <p id="detailTanggalPickup">-</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Lokasi Tujuan</label>
+                                            <p id="detailLokasiTujuan">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Tanggal Delivery</label>
+                                            <p id="detailTanggalDelivery">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5 class="card-title mb-4">Catatan</h5>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <p id="detailCatatan" class="border-start border-4 border-primary ps-3 py-2 bg-light">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Penugasan Tab -->
+                    <div class="tab-pane fade" id="penugasan-tab-pane" role="tabpanel" aria-labelledby="penugasan-tab" tabindex="0">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="card-title mb-0">Informasi Penugasan</h5>
+                                    <button class="btn btn-primary btn-sm" id="btnAssignDriver" style="display: none;">
+                                        <i class='bx bx-user-plus'></i> Tugaskan Driver
+                                    </button>
+                                </div>
+                                
+                                <div id="penugasanInfo">
+                                    <div class="alert alert-info" id="noPenugasanAlert">
+                                        <i class='bx bx-info-circle me-2'></i>
+                                        Belum ada penugasan untuk booking ini.
+                                    </div>
+                                    <div id="penugasanDetail" style="display: none;">
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label text-muted">Driver</label>
+                                                    <p id="penugasanDriver" class="d-flex align-items-center">
+                                                        <i class='bx bxs-user-circle fs-5 me-2'></i>
+                                                        <span>-</span>
+                                                    </p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label text-muted">Tanggal Penugasan</label>
+                                                    <p id="penugasanTanggal">-</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label text-muted">Armada</label>
+                                                    <p id="penugasanArmada" class="d-flex align-items-center">
+                                                        <i class='bx bxs-truck fs-5 me-2'></i>
+                                                        <span>-</span>
+                                                    </p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label text-muted">Status Penugasan</label>
+                                                    <p id="penugasanStatus">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">Catatan Penugasan</label>
+                                            <p id="penugasanCatatan" class="border-start border-4 border-info ps-3 py-2 bg-light">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="card-title mb-0">Tracking Pengiriman</h5>
+                                    <button class="btn btn-success btn-sm" id="btnUpdateTracking" style="display: none;">
+                                        <i class='bx bx-map'></i> Update Status
+                                    </button>
+                                </div>
+
+                                <div id="trackingTimeline" class="timeline">
+                                    <div class="alert alert-info" id="noTrackingAlert">
+                                        <i class='bx bx-info-circle me-2'></i>
+                                        Belum ada data tracking untuk booking ini.
+                                    </div>
+                                    <!-- Timeline items will be added here using JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Biaya Tab -->
+                    <div class="tab-pane fade" id="biaya-tab-pane" role="tabpanel" aria-labelledby="biaya-tab" tabindex="0">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="card-title mb-0">Biaya Operasional</h5>
+                                    <button class="btn btn-primary btn-sm" id="btnAddBiaya" style="display: none;">
+                                        <i class='bx bx-plus'></i> Tambah Biaya
+                                    </button>
+                                </div>
+
+                                <div class="alert alert-info" id="noBiayaAlert">
+                                    <i class='bx bx-info-circle me-2'></i>
+                                    Belum ada biaya operasional untuk booking ini.
+                                </div>
+
+                                <div class="table-responsive" id="biayaTable" style="display: none;">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Tanggal</th>
+                                                <th>Jenis Biaya</th>
+                                                <th>Jumlah</th>
+                                                <th>Keterangan</th>
+                                                <th>Status</th>
+                                                <th>Bukti</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="biayaTableBody">
+                                            <!-- Data akan diisi dengan JavaScript -->
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="fw-bold">
+                                                <td colspan="2">Total</td>
+                                                <td id="totalBiaya">Rp 0</td>
+                                                <td colspan="3"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Assign Driver & Armada -->
+    <div class="modal fade" id="assignModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Penugasan Driver & Armada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="assignForm">
+                        <input type="hidden" id="assignBookingId">
+                        <div class="mb-3">
+                            <label for="assignBookingNumber" class="form-label">No. Booking</label>
+                            <input type="text" class="form-control" id="assignBookingNumber" readonly>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="assignDriver" class="form-label">Driver</label>
+                                <select class="form-select" id="assignDriver" required>
+                                    <option value="">Pilih Driver</option>
+                                    <!-- Opsi driver akan diisi dengan JavaScript -->
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="assignArmada" class="form-label">Armada</label>
+                                <select class="form-select" id="assignArmada" required>
+                                    <option value="">Pilih Armada</option>
+                                    <!-- Opsi armada akan diisi dengan JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assignCatatan" class="form-label">Catatan Penugasan</label>
+                            <textarea class="form-control" id="assignCatatan" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="assignSubmitButton">Simpan Penugasan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tracking Update -->
+    <div class="modal fade" id="trackingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Status Pengiriman</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="trackingForm">
+                        <input type="hidden" id="trackingPenugasanId">
+                        <div class="mb-3">
+                            <label for="trackingBookingNumber" class="form-label">No. Booking</label>
+                            <input type="text" class="form-control" id="trackingBookingNumber" readonly>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="trackingStatus" class="form-label">Status</label>
+                                <select class="form-select" id="trackingStatus" required>
+                                    <option value="">Pilih Status</option>
+                                    <option value="dalam perjalanan">Dalam Perjalanan</option>
+                                    <option value="sampai tujuan">Sampai Tujuan</option>
+                                    <option value="selesai">Selesai</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="trackingLokasi" class="form-label">Lokasi</label>
+                                <input type="text" class="form-control" id="trackingLokasi" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="trackingKeterangan" class="form-label">Keterangan</label>
+                            <textarea class="form-control" id="trackingKeterangan" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="trackingFoto" class="form-label">Foto (opsional)</label>
+                            <input type="file" class="form-control" id="trackingFoto" accept="image/*">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="trackingSubmitButton">Simpan Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Biaya -->
+    <div class="modal fade" id="biayaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Biaya Operasional</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="biayaForm">
+                        <input type="hidden" id="biayaPenugasanId">
+                        <div class="mb-3">
+                            <label for="biayaBookingNumber" class="form-label">No. Booking</label>
+                            <input type="text" class="form-control" id="biayaBookingNumber" readonly>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="biayaJenis" class="form-label">Jenis Biaya</label>
+                                <select class="form-select" id="biayaJenis" required>
+                                    <option value="">Pilih Jenis Biaya</option>
+                                    <option value="BBM">BBM</option>
+                                    <option value="Tol">Tol</option>
+                                    <option value="Uang Makan Driver">Uang Makan Driver</option>
+                                    <option value="Biaya Lift On/Off">Biaya Lift On/Off</option>
+                                    <option value="Perbaikan Kendaraan">Perbaikan Kendaraan</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="biayaJumlah" class="form-label">Jumlah (Rp)</label>
+                                <input type="number" class="form-control" id="biayaJumlah" required min="0">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="biayaTanggal" class="form-label">Tanggal</label>
+                            <input type="date" class="form-control" id="biayaTanggal" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="biayaKeterangan" class="form-label">Keterangan</label>
+                            <textarea class="form-control" id="biayaKeterangan" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="biayaBukti" class="form-label">Bukti Transaksi (opsional)</label>
+                            <input type="file" class="form-control" id="biayaBukti" accept="image/*">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="biayaSubmitButton">Simpan Biaya</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Bukti -->
+    <div class="modal fade" id="detailBuktiModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bukti Transaksi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="buktiImage" src="" alt="Bukti Transaksi" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if user is logged in
+            if (!checkUserLoggedIn()) return;
+
+            // Get booking ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookingId = urlParams.get('id');
+
+            if (!bookingId) {
+                showAlert('danger', 'ID Booking tidak ditemukan');
+                setTimeout(() => {
+                    window.location.href = 'booking-list.html';
+                }, 1500);
+                return;
+            }
+
+            // Load booking details
+            await loadBookingDetails(bookingId);
+
+            // Print button handler
+            document.getElementById('printButton').addEventListener('click', () => {
+                window.print();
+            });
+
+            // Assign Driver button handler
+            document.getElementById('btnAssignDriver').addEventListener('click', async () => {
+                const bookingNumber = document.getElementById('detailNomorBooking').textContent;
+                
+                document.getElementById('assignBookingId').value = bookingId;
+                document.getElementById('assignBookingNumber').value = bookingNumber;
+                
+                // Load available drivers and armada
+                try {
+                    const [drivers, armada] = await Promise.all([
+                        window.api.getAvailableDrivers(),
+                        window.api.getAvailableArmada()
+                    ]);
+                    
+                    const driverSelect = document.getElementById('assignDriver');
+                    const armadaSelect = document.getElementById('assignArmada');
+                    
+                    // Clear existing options
+                    driverSelect.innerHTML = '<option value="">Pilih Driver</option>';
+                    armadaSelect.innerHTML = '<option value="">Pilih Armada</option>';
+                    
+                    // Add driver options
+                    drivers.forEach(driver => {
+                        const option = document.createElement('option');
+                        option.value = driver.id;
+                        option.textContent = `${driver.nama_lengkap} (${driver.kode_driver})`;
+                        driverSelect.appendChild(option);
+                    });
+                    
+                    // Add armada options
+                    armada.forEach(a => {
+                        const option = document.createElement('option');
+                        option.value = a.id;
+                        option.textContent = `${a.nomor_polisi} - ${a.jenis_kendaraan} ${a.merk} ${a.model}`;
+                        armadaSelect.appendChild(option);
+                    });
+                    
+                    // Show the modal
+                    const assignModal = new bootstrap.Modal(document.getElementById('assignModal'));
+                    assignModal.show();
+                } catch (error) {
+                    console.error('Error loading drivers and armada:', error);
+                    showAlert('danger', 'Gagal memuat data driver dan armada');
+                }
+            });
+
+            // Assign form submission handler
+            document.getElementById('assignSubmitButton').addEventListener('click', async () => {
+                const driverId = document.getElementById('assignDriver').value;
+                const armadaId = document.getElementById('assignArmada').value;
+                const catatan = document.getElementById('assignCatatan').value;
+                
+                if (!driverId || !armadaId) {
+                    alert('Silakan pilih driver dan armada');
+                    return;
+                }
+                
+                try {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    
+                    await window.api.addPenugasan({
+                        booking_order_id: bookingId,
+                        driver_id: driverId,
+                        armada_id: armadaId,
+                        catatan: catatan,
+                        dibuat_oleh: user.id
+                    });
+                    
+                    // Close the modal
+                    bootstrap.Modal.getInstance(document.getElementById('assignModal')).hide();
+                    
+                    // Reload booking details
+                    await loadBookingDetails(bookingId);
+                    
+                    showAlert('success', 'Penugasan berhasil disimpan');
+                } catch (error) {
+                    console.error('Error assigning driver and armada:', error);
+                    showAlert('danger', 'Gagal menyimpan penugasan');
+                }
+            });
+
+            // Update Tracking button handler
+            document.getElementById('btnUpdateTracking').addEventListener('click', () => {
+                const penugasanId = document.getElementById('trackingPenugasanId').value;
+                const bookingNumber = document.getElementById('detailNomorBooking').textContent;
+                
+                document.getElementById('trackingBookingNumber').value = bookingNumber;
+                
+                // Show the modal
+                const trackingModal = new bootstrap.Modal(document.getElementById('trackingModal'));
+                trackingModal.show();
+            });
+
+            // Tracking form submission handler
+            document.getElementById('trackingSubmitButton').addEventListener('click', async () => {
+                const penugasanId = document.getElementById('trackingPenugasanId').value;
+                const status = document.getElementById('trackingStatus').value;
+                const lokasi = document.getElementById('trackingLokasi').value;
+                const keterangan = document.getElementById('trackingKeterangan').value;
+                
+                if (!status || !lokasi) {
+                    alert('Silakan isi status dan lokasi');
+                    return;
+                }
+                
+                try {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    
+                    // Handle foto upload if any
+                    let fotoBase64 = null;
+                    const fotoInput = document.getElementById('trackingFoto');
+                    if (fotoInput.files.length > 0) {
+                        fotoBase64 = await readFileAsBase64(fotoInput.files[0]);
+                    }
+                    
+                    await window.api.addTracking({
+                        penugasan_id: penugasanId,
+                        status: status,
+                        lokasi: lokasi,
+                        keterangan: keterangan,
+                        foto: fotoBase64,
+                        diperbarui_oleh: user.id
+                    });
+                    
+                    // Close the modal
+                    bootstrap.Modal.getInstance(document.getElementById('trackingModal')).hide();
+                    
+                    // Reset form
+                    document.getElementById('trackingForm').reset();
+                    
+                    // Reload booking details
+                    await loadBookingDetails(bookingId);
+                    
+                    showAlert('success', 'Status pengiriman berhasil diperbarui');
+                } catch (error) {
+                    console.error('Error updating tracking status:', error);
+                    showAlert('danger', 'Gagal memperbarui status pengiriman');
+                }
+            });
+
+            // Add Biaya button handler
+            document.getElementById('btnAddBiaya').addEventListener('click', () => {
+                const penugasanId = document.getElementById('trackingPenugasanId').value;
+                const bookingNumber = document.getElementById('detailNomorBooking').textContent;
+                
+                document.getElementById('biayaPenugasanId').value = penugasanId;
+                document.getElementById('biayaBookingNumber').value = bookingNumber;
+                document.getElementById('biayaTanggal').value = formatDateInput(new Date());
+                
+                // Show the modal
+                const biayaModal = new bootstrap.Modal(document.getElementById('biayaModal'));
+                biayaModal.show();
+            });
+
+            // Biaya form submission handler
+            document.getElementById('biayaSubmitButton').addEventListener('click', async () => {
+                const penugasanId = document.getElementById('biayaPenugasanId').value;
+                const jenisBiaya = document.getElementById('biayaJenis').value;
+                const jumlah = document.getElementById('biayaJumlah').value;
+                const tanggal = document.getElementById('biayaTanggal').value;
+                const keterangan = document.getElementById('biayaKeterangan').value;
+                
+                if (!jenisBiaya || !jumlah || !tanggal) {
+                    alert('Silakan lengkapi data yang diperlukan');
+                    return;
+                }
+                
+                try {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    
+                    // Handle bukti upload if any
+                    let buktiBase64 = null;
+                    const buktiInput = document.getElementById('biayaBukti');
+                    if (buktiInput.files.length > 0) {
+                        buktiBase64 = await readFileAsBase64(buktiInput.files[0]);
+                    }
+                    
+                    await window.api.addBiayaOperasional({
+                        penugasan_id: penugasanId,
+                        jenis_biaya: jenisBiaya,
+                        jumlah: jumlah,
+                        tanggal: tanggal,
+                        keterangan: keterangan,
+                        bukti_transaksi: buktiBase64,
+                        dibuat_oleh: user.id
+                    });
+                    
+                    // Close the modal
+                    bootstrap.Modal.getInstance(document.getElementById('biayaModal')).hide();
+                    
+                    // Reset form
+                    document.getElementById('biayaForm').reset();
+                    
+                    // Reload booking details
+                    await loadBookingDetails(bookingId);
+                    
+                    showAlert('success', 'Biaya operasional berhasil disimpan');
+                } catch (error) {
+                    console.error('Error saving biaya operasional:', error);
+                    showAlert('danger', 'Gagal menyimpan biaya operasional');
+                }
+            });
+
+            // View bukti button click handler (will be set up in loadBiayaOperasional)
+        });
+
+        // Function to load booking details
+        async function loadBookingDetails(bookingId) {
+            try {
+                // Get booking detail
+                const booking = await window.api.getBookingDetail(bookingId);
+
+                if (!booking) {
+                    showAlert('danger', 'Data booking tidak ditemukan');
+                    return;
+                }
+
+                // Update page title
+                document.title = `${booking.nomor_booking} - Detail Booking`;
+
+                // Populate header info
+                document.getElementById('nomorBooking').textContent = `No. Booking: ${booking.nomor_booking}`;
+                document.getElementById('tanggalBooking').textContent = `Tanggal: ${formatDateDisplay(booking.tanggal_booking)}`;
+                document.getElementById('namaPelanggan').textContent = `Pelanggan: ${booking.nama_pelanggan}`;
+                document.getElementById('jenisKontainer').textContent = `Kontainer: ${booking.jenis_kontainer}${booking.nomor_kontainer ? ' - ' + booking.nomor_kontainer : ''}`;
+                document.getElementById('rutePengiriman').textContent = `Rute: ${booking.asal} - ${booking.tujuan}`;
+                document.getElementById('tanggalPickup').textContent = `Pickup: ${formatDateDisplay(booking.tanggal_pickup)}`;
+                document.getElementById('tanggalDelivery').textContent = `Delivery: ${formatDateDisplay(booking.tanggal_delivery)}`;
+
+                // Set status badge
+                const statusBooking = document.getElementById('statusBooking');
+                statusBooking.textContent = formatStatus(booking.status);
+                statusBooking.className = `badge ${getStatusBadgeClass(booking.status)}`;
+
+                // Populate detail tab
+                document.getElementById('detailNomorBooking').textContent = booking.nomor_booking;
+                document.getElementById('detailTanggalBooking').textContent = formatDateDisplay(booking.tanggal_booking);
+                document.getElementById('detailJenisLayanan').textContent = booking.nama_layanan;
+                document.getElementById('detailPelanggan').textContent = booking.nama_pelanggan;
+                document.getElementById('detailJenisKontainer').textContent = booking.jenis_kontainer;
+                document.getElementById('detailNomorKontainer').textContent = booking.nomor_kontainer || '-';
+                document.getElementById('detailNomorSeal').textContent = booking.nomor_seal || '-';
+                document.getElementById('detailStatus').textContent = formatStatus(booking.status);
+                document.getElementById('detailLokasiAsal').textContent = booking.asal;
+                document.getElementById('detailLokasiTujuan').textContent = booking.tujuan;
+                document.getElementById('detailTanggalPickup').textContent = formatDateDisplay(booking.tanggal_pickup) + (booking.waktu_pickup ? ' ' + booking.waktu_pickup : '');
+                document.getElementById('detailTanggalDelivery').textContent = formatDateDisplay(booking.tanggal_delivery) + (booking.waktu_delivery ? ' ' + booking.waktu_delivery : '');
+                document.getElementById('detailCatatan').textContent = booking.catatan || 'Tidak ada catatan';
+
+                // Show the appropriate action buttons based on booking status
+                const btnAssignDriver = document.getElementById('btnAssignDriver');
+                const btnUpdateTracking = document.getElementById('btnUpdateTracking');
+                const btnAddBiaya = document.getElementById('btnAddBiaya');
+
+                if (booking.status === 'terdaftar') {
+                    btnAssignDriver.style.display = 'block';
+                    btnUpdateTracking.style.display = 'none';
+                    btnAddBiaya.style.display = 'none';
+                } else if (booking.status === 'ditugaskan' || booking.status === 'dalam perjalanan' || booking.status === 'sampai tujuan') {
+                    btnAssignDriver.style.display = 'none';
+                    btnUpdateTracking.style.display = 'block';
+                    btnAddBiaya.style.display = 'block';
+                } else {
+                    btnAssignDriver.style.display = 'none';
+                    btnUpdateTracking.style.display = 'none';
+                    btnAddBiaya.style.display = 'block';
+                }
+
+                // Load penugasan data
+                await loadPenugasanData(bookingId);
+
+                // Load biaya operasional data
+                await loadBiayaOperasional(bookingId);
+
+            } catch (error) {
+                console.error('Error loading booking details:', error);
+                showAlert('danger', 'Gagal memuat detail booking');
+            }
+        }
+
+        // Function to load penugasan and tracking data
+        async function loadPenugasanData(bookingId) {
+            try {
+                // For demonstration, we'll simulate the API calls
+                // In real implementation, these would be actual API calls
+                let penugasanData = null;
+                let trackingData = [];
+
+                // Get booking detail to check if there's a penugasan
+                const booking = await window.api.getBookingDetail(bookingId);
+
+                // If booking status is not 'terdaftar', then there should be a penugasan
+                if (booking.status !== 'terdaftar') {
+                    // In real implementation, we would get penugasan by booking_id
+                    // For demonstration, we'll create a dummy penugasan
+                    penugasanData = {
+                        id: 1,
+                        booking_order_id: bookingId,
+                        driver_id: 1,
+                        armada_id: 1,
+                        tanggal_penugasan: booking.tanggal_booking,
+                        status: booking.status,
+                        catatan: 'Catatan penugasan untuk driver',
+                        dibuat_oleh: 1,
+                        driver_nama: booking.nama_driver || 'John Doe',
+                        driver_kode: 'DRV001',
+                        armada_nomor_polisi: booking.nomor_polisi || 'B 1234 XYZ',
+                        armada_jenis: 'Truck Fuso'
+                    };
+
+                    // Get tracking data
+                    // In real implementation, we would call the API
+                    // For demonstration, we'll create dummy tracking data
+                    const statuses = ['ditugaskan', 'dalam perjalanan', 'sampai tujuan', 'selesai'];
+                    const statusIndex = statuses.indexOf(booking.status);
+
+                    // Create tracking entries up to current status
+                    for (let i = 0; i <= statusIndex; i++) {
+                        const trackDate = new Date(booking.tanggal_booking);
+                        trackDate.setHours(trackDate.getHours() + (i * 12));
+
+                        trackingData.push({
+                            id: i + 1,
+                            penugasan_id: penugasanData.id,
+                            status: statuses[i],
+                            lokasi: i === 0 ? booking.asal : (i === statuses.length - 1 ? booking.tujuan : `Checkpoint ${i}`),
+                            tanggal_waktu: trackDate.toISOString(),
+                            keterangan: `Update status menjadi ${formatStatus(statuses[i])}`,
+                            foto: null,
+                            diperbarui_oleh: 1
+                        });
+                    }
+                }
+
+                // Update penugasan display
+                const noPenugasanAlert = document.getElementById('noPenugasanAlert');
+                const penugasanDetail = document.getElementById('penugasanDetail');
+
+                if (penugasanData) {
+                    noPenugasanAlert.style.display = 'none';
+                    penugasanDetail.style.display = 'block';
+
+                    document.getElementById('penugasanDriver').querySelector('span').textContent = `${penugasanData.driver_nama} (${penugasanData.driver_kode})`;
+                    document.getElementById('penugasanArmada').querySelector('span').textContent = `${penugasanData.armada_nomor_polisi} - ${penugasanData.armada_jenis}`;
+                    document.getElementById('penugasanTanggal').textContent = formatDateDisplay(penugasanData.tanggal_penugasan);
+                    document.getElementById('penugasanStatus').textContent = formatStatus(penugasanData.status);
+                    document.getElementById('penugasanCatatan').textContent = penugasanData.catatan || 'Tidak ada catatan';
+
+                    // Set penugasan ID for tracking
+                    document.getElementById('trackingPenugasanId').value = penugasanData.id;
+                } else {
+                    noPenugasanAlert.style.display = 'block';
+                    penugasanDetail.style.display = 'none';
+                }
+
+                // Update tracking timeline
+                const noTrackingAlert = document.getElementById('noTrackingAlert');
+                const trackingTimeline = document.getElementById('trackingTimeline');
+
+                if (trackingData.length > 0) {
+                    noTrackingAlert.style.display = 'none';
+
+                    // Clear existing timeline items
+                    const existingItems = trackingTimeline.querySelectorAll('.timeline-item');
+                    existingItems.forEach(item => item.remove());
+
+                    // Add new timeline items
+                    trackingData.forEach(tracking => {
+                        const timelineItem = document.createElement('div');
+                        timelineItem.className = 'timeline-item';
+
+                        const statusColorClass = getStatusColorClass(tracking.status);
+
+                        timelineItem.innerHTML = `
+                            <div class="timeline-marker ${statusColorClass}"></div>
+                            <div class="timeline-content">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h6 class="mb-0">${formatStatus(tracking.status)}</h6>
+                                    <small class="text-muted">${formatDateTimeDisplay(tracking.tanggal_waktu)}</small>
+                                </div>
+                                <p class="mb-1"><i class='bx bx-map-pin me-1'></i> ${tracking.lokasi}</p>
+                                <p class="mb-1">${tracking.keterangan || ''}</p>
+                                ${tracking.foto ? `<div class="mt-2"><img src="${tracking.foto}" alt="Foto Tracking" class="img-fluid img-thumbnail" style="max-height: 150px;"></div>` : ''}
+                            </div>
+                        `;
+
+                        trackingTimeline.appendChild(timelineItem);
+                    });
+                } else {
+                    noTrackingAlert.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('Error loading penugasan and tracking data:', error);
+                showAlert('danger', 'Gagal memuat data penugasan dan tracking');
+            }
+        }
+
+        // Function to load biaya operasional data
+        async function loadBiayaOperasional(bookingId) {
+            try {
+                // Get booking detail to check if there's a penugasan
+                const booking = await window.api.getBookingDetail(bookingId);
+
+                // If booking doesn't have penugasan, no biaya can be added
+                if (booking.status === 'terdaftar') {
+                    document.getElementById('noBiayaAlert').style.display = 'block';
+                    document.getElementById('biayaTable').style.display = 'none';
+                    return;
+                }
+
+                // Simulate getting biaya data
+                // In real implementation, we would call the API
+                const biayaData = [];
+
+                // For demonstration, we'll create dummy biaya data if booking is beyond 'ditugaskan' status
+                if (booking.status !== 'terdaftar' && booking.status !== 'ditugaskan') {
+                    const jenisBiaya = ['BBM', 'Tol', 'Uang Makan Driver', 'Biaya Lift On/Off'];
+                    const statuses = ['diajukan', 'disetujui'];
+
+                    // Create a few dummy entries
+                    for (let i = 0; i < 3; i++) {
+                        const biayaDate = new Date(booking.tanggal_booking);
+                        biayaDate.setHours(biayaDate.getHours() + (i * 24));
+
+                        biayaData.push({
+                            id: i + 1,
+                            penugasan_id: 1, // Assuming there's a penugasan with ID 1
+                            jenis_biaya: jenisBiaya[i % jenisBiaya.length],
+                            jumlah: 150000 + (i * 50000),
+                            tanggal: biayaDate.toISOString().split('T')[0],
+                            keterangan: `Biaya ${jenisBiaya[i % jenisBiaya.length]} untuk perjalanan`,
+                            bukti_transaksi: null,
+                            status: statuses[i % statuses.length],
+                            disetujui_oleh: i % 2 === 1 ? 1 : null,
+                            disetujui_pada: i % 2 === 1 ? biayaDate.toISOString() : null,
+                            dibuat_oleh: 1
+                        });
+                    }
+                }
+
+                // Update biaya display
+                const noBiayaAlert = document.getElementById('noBiayaAlert');
+                const biayaTable = document.getElementById('biayaTable');
+                const biayaTableBody = document.getElementById('biayaTableBody');
+
+                if (biayaData.length > 0) {
+                    noBiayaAlert.style.display = 'none';
+                    biayaTable.style.display = 'block';
+
+                    // Clear existing rows
+                    biayaTableBody.innerHTML = '';
+
+                    // Calculate total
+                    let totalBiaya = 0;
+
+                    // Add new rows
+                    biayaData.forEach(biaya => {
+                        totalBiaya += biaya.jumlah;
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${formatDateDisplay(biaya.tanggal)}</td>
+                            <td>${biaya.jenis_biaya}</td>
+                            <td>${formatRupiah(biaya.jumlah)}</td>
+                            <td>${biaya.keterangan || '-'}</td>
+                            <td>${createStatusBadge(biaya.status)}</td>
+                            <td>
+                                ${biaya.bukti_transaksi ?
+                                    `<button class="btn btn-sm btn-info btn-view-bukti" data-bukti="${biaya.bukti_transaksi}">
+                                        <i class='bx bx-image'></i> Lihat
+                                    </button>` :
+                                    'Tidak ada bukti'
+                                }
+                            </td>
+                        `;
+
+                        biayaTableBody.appendChild(row);
+                    });
+
+                    // Update total
+                    document.getElementById('totalBiaya').textContent = formatRupiah(totalBiaya);
+
+                    // Setup view bukti buttons
+                    setupViewBuktiButtonsHandler();
+                } else {
+                    noBiayaAlert.style.display = 'block';
+                    biayaTable.style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error('Error loading biaya operasional data:', error);
+                showAlert('danger', 'Gagal memuat data biaya operasional');
+            }
+        }
+
+        // Setup view bukti buttons handler
+        function setupViewBuktiButtonsHandler() {
+            document.querySelectorAll('.btn-view-bukti').forEach(button => {
+                button.addEventListener('click', () => {
+                    const buktiBase64 = button.getAttribute('data-bukti');
+                    
+                    if (buktiBase64) {
+                        document.getElementById('buktiImage').src = buktiBase64;
+                        
+                        // Show the modal
+                        const detailBuktiModal = new bootstrap.Modal(document.getElementById('detailBuktiModal'));
+                        detailBuktiModal.show();
+                    }
+                });
+            });
+        }
+
+        // Helper function to get status badge class
+        function getStatusBadgeClass(status) {
+            switch (status) {
+                case 'terdaftar': return 'bg-secondary';
+                case 'ditugaskan': return 'bg-info';
+                case 'dalam perjalanan': return 'bg-primary';
+                case 'sampai tujuan': return 'bg-warning';
+                case 'selesai': return 'bg-success';
+                case 'dibatalkan': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
+
+        // Helper function to get status color class for timeline
+        function getStatusColorClass(status) {
+            switch (status) {
+                case 'terdaftar': return 'bg-secondary';
+                case 'ditugaskan': return 'bg-info';
+                case 'dalam perjalanan': return 'bg-primary';
+                case 'sampai tujuan': return 'bg-warning';
+                case 'selesai': return 'bg-success';
+                case 'dibatalkan': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
+
+        // Helper function to format date time display
+        function formatDateTimeDisplay(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Helper function to read file as base64
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+</body>
+</html>

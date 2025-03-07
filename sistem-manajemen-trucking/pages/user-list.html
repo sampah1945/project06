@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Pengguna - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Daftar Pengguna</h2>
+                    <a href="user-add.html" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Tambah Pengguna
+                    </a>
+                </div>
+
+                <!-- Data Table Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="userTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Nama Lengkap</th>
+                                        <th>Jabatan</th>
+                                        <th>Email</th>
+                                        <th>No. Telepon</th>
+                                        <th>Hak Akses</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail User -->
+    <div class="modal fade" id="detailUserModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Pengguna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <img src="../assets/images/avatar.png" alt="Avatar" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;">
+                            <div id="detailStatus" class="badge bg-success mb-2">Aktif</div>
+                            <p class="mb-0 fw-bold" id="detailUsername">username</p>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="mb-4">
+                                <h5 class="text-muted">Informasi Pribadi</h5>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td width="35%">Nama Lengkap</td>
+                                        <td width="5%">:</td>
+                                        <td width="60%" id="detailNamaLengkap"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jabatan</td>
+                                        <td>:</td>
+                                        <td id="detailJabatan"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td>:</td>
+                                        <td id="detailEmail"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>No. Telepon</td>
+                                        <td>:</td>
+                                        <td id="detailTelepon"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hak Akses</td>
+                                        <td>:</td>
+                                        <td id="detailHakAkses"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tanggal Dibuat</td>
+                                        <td>:</td>

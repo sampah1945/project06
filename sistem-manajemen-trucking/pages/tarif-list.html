@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Tarif - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Daftar Tarif</h2>
+                    <a href="tarif-add.html" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Tambah Tarif
+                    </a>
+                </div>
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter</h5>
+                        <form id="filterForm">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="filterJenisLayanan" class="form-label">Jenis Layanan</label>
+                                    <select class="form-select" id="filterJenisLayanan">
+                                        <option value="">Semua Layanan</option>
+                                        <option value="1">Port to Warehouse</option>
+                                        <option value="2">Warehouse to Port</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterJenisKontainer" class="form-label">Jenis Kontainer</label>
+                                    <select class="form-select" id="filterJenisKontainer">
+                                        <option value="">Semua Jenis</option>
+                                        <option value="20ft">20 Feet</option>
+                                        <option value="40ft">40 Feet</option>
+                                        <option value="45ft">45 Feet</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterAsal" class="form-label">Asal</label>
+                                    <input type="text" class="form-control" id="filterAsal" placeholder="Cari berdasarkan asal">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterTujuan" class="form-label">Tujuan</label>
+                                    <input type="text" class="form-control" id="filterTujuan" placeholder="Cari berdasarkan tujuan">
+                                </div>
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" id="resetFilterButton" class="btn btn-outline-secondary me-2">Reset</button>
+                                    <button type="submit" class="btn btn-primary">Terapkan Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Data Table Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="tarifTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Jenis Layanan</th>
+                                        <th>Asal</th>
+                                        <th>Tujuan</th>
+                                        <th>Jenis Kontainer</th>
+                                        <th>Harga</th>
+                                        <th>Masa Berlaku</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Tarif -->
+    <div class="modal fade" id="detailTarifModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Tarif</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="text-muted">Informasi Layanan</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="40%">Jenis Layanan</td>
+                                    <td width="5%">:</td>
+                                    <td width="55%" id="detailJenisLayanan"></td>
+                                </tr>
+                                <tr>
+                                    <td>Asal</td>
+                                    <td>:</td>
+                                    <td id="detailAsal"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tujuan</td>
+                                    <td>:</td>
+                                    <td id="detailTujuan"></td>
+                                </tr>
+                                <tr>
+                                    <td>Jenis Kontainer</td>
+                                    <td>:</td>
+                                    <td id="detailJenisKontainer"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-muted">Informasi Harga</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="40%">Harga</td>
+                                    <td width="5%">:</td>
+                                    <td width="55%" id="detailHarga" class="fw-bold text-primary"></td>
+                                </tr>
+                                <tr>
+                                    <td>Berlaku Mulai</td>
+                                    <td>:</td>
+                                    <td id="detailBerlakuMulai"></td>
+                                </tr>
+                                <tr>
+                                    <td>Berlaku Sampai</td>
+                                    <td>:</td>
+                                    <td id="detailBerlakuSelesai"></td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>:</td>
+                                    <td id="detailStatus"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <a href="#" class="btn btn-warning" id="detailEditButton">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Toggle Status -->
+    <div class="modal fade" id="toggleStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ubah Status Tarif</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin mengubah status tarif ini?</p>
+                    <input type="hidden" id="tarifId">
+                    <input type="hidden" id="newStatus">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="toggleStatusSubmitButton">Ya, Ubah Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load sidebar and navbar
+            $("#sidebar-container").load("../components/sidebar.html", function() {
+                // Aktifkan menu yang sedang aktif
+                const activeMenu = document.querySelector("#sidebar .components li a[href='tarif-list.html']");
+                if (activeMenu) {
+                    activeMenu.parentElement.classList.add("active");
+                    const parentCollapse = activeMenu.closest(".collapse");
+                    if (parentCollapse) {
+                        parentCollapse.classList.add("show");
+                        const parentToggle = document.querySelector(`[data-bs-target="#${parentCollapse.id}"]`);
+                        if (parentToggle) {
+                            parentToggle.setAttribute("aria-expanded", "true");
+                        }
+                    }
+                }
+            });
+            
+            $("#navbar-container").load("../components/navbar.html");
+            
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Initialize DataTable
+            const tarifTable = $('#tarifTable').DataTable({
+                responsive: true,
+                order: [[0, 'desc']] // Sort by ID descending
+            });
+            
+            // Filter form handling
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await loadTarifData();
+            });
+            
+            // Reset filter button
+            document.getElementById('resetFilterButton').addEventListener('click', () => {
+                filterForm.reset();
+            });
+            
+            // Initial loading of tarif data
+            await loadTarifData();
+            
+            // Function to load tarif data with filters
+            async function loadTarifData() {
+                try {
+                    const filter = {
+                        jenisLayanan: document.getElementById('filterJenisLayanan').value,
+                        jenisKontainer: document.getElementById('filterJenisKontainer').value,
+                        asal: document.getElementById('filterAsal').value,
+                        tujuan: document.getElementById('filterTujuan').value
+                    };
+                    
+                    // In a real app, this would be an API call
+                    // Simulate API data
+                    const tarifData = [
+                        {
+                            id: 1,
+                            jenis_layanan_id: 1,
+                            nama_layanan: 'Port to Warehouse',
+                            asal: 'Pelabuhan Tanjung Priok',
+                            tujuan: 'Gudang Marunda',
+                            jenis_kontainer: '20ft',
+                            harga: 2500000,
+                            masa_berlaku_mulai: '2025-01-01',
+                            masa_berlaku_selesai: '2025-12-31',
+                            status: 'aktif'
+                        },
+                        {
+                            id: 2,
+                            jenis_layanan_id: 1,
+                            nama_layanan: 'Port to Warehouse',
+                            asal: 'Pelabuhan Tanjung Priok',
+                            tujuan: 'Gudang Marunda',
+                            jenis_kontainer: '40ft',
+                            harga: 3500000,
+                            masa_berlaku_mulai: '2025-01-01',
+                            masa_berlaku_selesai: '2025-12-31',
+                            status: 'aktif'
+                        },
+                        {
+                            id: 3,
+                            jenis_layanan_id: 2,
+                            nama_layanan: 'Warehouse to Port',
+                            asal: 'Gudang Marunda',
+                            tujuan: 'Pelabuhan Tanjung Priok',
+                            jenis_kontainer: '20ft',
+                            harga: 2300000,
+                            masa_berlaku_mulai: '2025-01-01',
+                            masa_berlaku_selesai: '2025-12-31',
+                            status: 'aktif'
+                        },
+                        {
+                            id: 4,
+                            jenis_layanan_id: 2,
+                            nama_layanan: 'Warehouse to Port',
+                            asal: 'Gudang Marunda',
+                            tujuan: 'Pelabuhan Tanjung Priok',
+                            jenis_kontainer: '40ft',
+                            harga: 3300000,
+                            masa_berlaku_mulai: '2025-01-01',
+                            masa_berlaku_selesai: '2025-12-31',
+                            status: 'aktif'
+                        },
+                        {
+                            id: 5,
+                            jenis_layanan_id: 1,
+                            nama_layanan: 'Port to Warehouse',
+                            asal: 'Pelabuhan Tanjung Perak',
+                            tujuan: 'Gudang Surabaya',
+                            jenis_kontainer: '20ft',
+                            harga: 2200000,
+                            masa_berlaku_mulai: '2025-01-01',
+                            masa_berlaku_selesai: '2025-06-30',
+                            status: 'tidak aktif'
+                        }
+                    ];
+                    
+                    // Filter data
+                    let filteredData = tarifData;
+                    
+                    if (filter.jenisLayanan) {
+                        filteredData = filteredData.filter(item => item.jenis_layanan_id == filter.jenisLayanan);
+                    }
+                    
+                    if (filter.jenisKontainer) {
+                        filteredData = filteredData.filter(item => item.jenis_kontainer === filter.jenisKontainer);
+                    }
+                    
+                    if (filter.asal) {
+                        filteredData = filteredData.filter(item => 
+                            item.asal.toLowerCase().includes(filter.asal.toLowerCase())
+                        );
+                    }
+                    
+                    if (filter.tujuan) {
+                        filteredData = filteredData.filter(item => 
+                            item.tujuan.toLowerCase().includes(filter.tujuan.toLowerCase())
+                        );
+                    }
+                    
+                    // Clear existing data
+                    tarifTable.clear();
+                    
+                    // Add new data
+                    filteredData.forEach(tarif => {
+                        const actionsHtml = `
+                            <button class="btn btn-sm btn-info me-1 btn-detail" data-id="${tarif.id}" title="Detail"><i class='bx bx-detail'></i></button>
+                            <a href="tarif-edit.html?id=${tarif.id}" class="btn btn-sm btn-warning me-1" title="Edit"><i class='bx bx-edit'></i></a>
+                            <button class="btn btn-sm ${tarif.status === 'aktif' ? 'btn-danger' : 'btn-success'} btn-toggle-status" 
+                                data-id="${tarif.id}" 
+                                data-status="${tarif.status === 'aktif' ? 'tidak aktif' : 'aktif'}" 
+                                title="${tarif.status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan'}">
+                                <i class='bx ${tarif.status === 'aktif' ? 'bx-x' : 'bx-check'}'></i>
+                            </button>
+                        `;
+                        
+                        tarifTable.row.add([
+                            tarif.id,
+                            tarif.nama_layanan,
+                            tarif.asal,
+                            tarif.tujuan,
+                            tarif.jenis_kontainer,
+                            formatRupiah(tarif.harga),
+                            `${formatDateDisplay(tarif.masa_berlaku_mulai)} - ${formatDateDisplay(tarif.masa_berlaku_selesai)}`,
+                            createStatusBadge(tarif.status),
+                            actionsHtml
+                        ]);
+                    });
+                    
+                    // Redraw the table
+                    tarifTable.draw();
+                    
+                    // Setup action button event listeners
+                    setupActionButtonEventListeners(filteredData);
+                    
+                } catch (error) {
+                    console.error('Error loading tarif data:', error);
+                    showAlert('danger', 'Gagal memuat data tarif');
+                }
+            }
+            
+            function setupActionButtonEventListeners(tarifData) {
+                // Detail button click handler
+                document.querySelectorAll('.btn-detail').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tarifId = button.getAttribute('data-id');
+                        
+                        // Find tarif in data
+                        const tarif = tarifData.find(t => t.id == tarifId);
+                        
+                        if (tarif) {
+                            // Populate modal with tarif details
+                            document.getElementById('detailJenisLayanan').textContent = tarif.nama_layanan;
+                            document.getElementById('detailAsal').textContent = tarif.asal;
+                            document.getElementById('detailTujuan').textContent = tarif.tujuan;
+                            document.getElementById('detailJenisKontainer').textContent = tarif.jenis_kontainer;
+                            document.getElementById('detailHarga').textContent = formatRupiah(tarif.harga);
+                            document.getElementById('detailBerlakuMulai').textContent = formatDateDisplay(tarif.masa_berlaku_mulai);
+                            document.getElementById('detailBerlakuSelesai').textContent = formatDateDisplay(tarif.masa_berlaku_selesai);
+                            
+                            // Set status with badge
+                            document.getElementById('detailStatus').innerHTML = createStatusBadge(tarif.status);
+                            
+                            // Set edit button URL
+                            document.getElementById('detailEditButton').href = `tarif-edit.html?id=${tarif.id}`;
+                            
+                            // Show modal
+                            const detailModal = new bootstrap.Modal(document.getElementById('detailTarifModal'));
+                            detailModal.show();
+                        }
+                    });
+                });
+                
+                // Toggle status button click handler
+                document.querySelectorAll('.btn-toggle-status').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tarifId = button.getAttribute('data-id');
+                        const newStatus = button.getAttribute('data-status');
+                        
+                        document.getElementById('tarifId').value = tarifId;
+                        document.getElementById('newStatus').value = newStatus;
+                        
+                        // Show confirmation modal
+                        const toggleStatusModal = new bootstrap.Modal(document.getElementById('toggleStatusModal'));
+                        toggleStatusModal.show();
+                    });
+                });
+            }
+            
+            // Toggle status submit button handler
+            document.getElementById('toggleStatusSubmitButton').addEventListener('click', async () => {
+                const tarifId = document.getElementById('tarifId').value;
+                const newStatus = document.getElementById('newStatus').value;
+                
+                try {
+                    // In a real app, this would be an API call
+                    // Simulate API call success
+                    setTimeout(() => {
+                        // Close modal
+                        bootstrap.Modal.getInstance(document.getElementById('toggleStatusModal')).hide();
+                        
+                        // Reload tarif data
+                        loadTarifData();
+                        
+                        showAlert('success', 'Status tarif berhasil diubah');
+                    }, 500);
+                } catch (error) {
+                    console.error('Error toggling tarif status:', error);
+                    showAlert('danger', 'Gagal mengubah status tarif');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

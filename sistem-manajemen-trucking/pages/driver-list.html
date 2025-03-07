@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Driver - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Daftar Driver</h2>
+                    <a href="driver-add.html" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Tambah Driver
+                    </a>
+                </div>
+
+                <!-- Data Table Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="driverTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Foto</th>
+                                        <th>Kode</th>
+                                        <th>Nama Lengkap</th>
+                                        <th>No. Telepon</th>
+                                        <th>SIM</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Driver -->
+    <div class="modal fade" id="detailDriverModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Driver</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <img id="detailFoto" src="../assets/images/avatar.png" alt="Foto Driver" class="img-fluid rounded mb-3" style="max-height: 200px;">
+                            <div id="detailStatus" class="badge bg-success mb-2">Aktif</div>
+                            <p class="mb-0 fw-bold" id="detailKode">DRV001</p>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="text-muted">Informasi Pribadi</h5>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td width="35%">Nama Lengkap</td>
+                                            <td width="5%">:</td>
+                                            <td width="60%" id="detailNama"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tanggal Lahir</td>
+                                            <td>:</td>
+                                            <td id="detailTanggalLahir"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Alamat</td>
+                                            <td>:</td>
+                                            <td id="detailAlamat"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. Telepon</td>
+                                            <td>:</td>
+                                            <td id="detailTelepon"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="text-muted">Informasi Lisensi</h5>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td width="35%">No. KTP</td>
+                                            <td width="5%">:</td>
+                                            <td width="60%" id="detailKTP"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. SIM</td>
+                                            <td>:</td>
+                                            <td id="detailSIM"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tipe SIM</td>
+                                            <td>:</td>
+                                            <td id="detailTipeSIM"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tanggal Bergabung</td>
+                                            <td>:</td>
+                                            <td id="detailTanggalBergabung"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5 class="text-muted">Catatan</h5>
+                            <p id="detailCatatan" class="border-start border-4 border-primary ps-3 py-2 bg-light"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <a href="#" class="btn btn-warning" id="detailEditButton">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load sidebar and navbar
+            $("#sidebar-container").load("../components/sidebar.html", function() {
+                // Aktifkan menu yang sedang aktif
+                const activeMenu = document.querySelector("#sidebar .components li a[href='driver-list.html']");
+                if (activeMenu) {
+                    activeMenu.parentElement.classList.add("active");
+                    const parentCollapse = activeMenu.closest(".collapse");
+                    if (parentCollapse) {
+                        parentCollapse.classList.add("show");
+                        const parentToggle = document.querySelector(`[data-bs-target="#${parentCollapse.id}"]`);
+                        if (parentToggle) {
+                            parentToggle.setAttribute("aria-expanded", "true");
+                        }
+                    }
+                }
+            });
+            
+            $("#navbar-container").load("../components/navbar.html");
+            
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Initialize DataTable
+            const driverTable = $('#driverTable').DataTable({
+                responsive: true,
+                order: [[2, 'asc']] // Sort by nama lengkap ascending
+            });
+            
+            // Load driver data
+            try {
+                const driverData = await window.api.getDriver();
+                
+                driverData.forEach(driver => {
+                    const actionsHtml = `
+                        <button class="btn btn-sm btn-info me-1 btn-detail" data-id="${driver.id}" title="Detail"><i class='bx bx-detail'></i></button>
+                        <a href="driver-edit.html?id=${driver.id}" class="btn btn-sm btn-warning me-1" title="Edit"><i class='bx bx-edit'></i></a>
+                    `;
+                    
+                    const foto = driver.foto ? 
+                        `<img src="${driver.foto}" class="avatar avatar-sm" alt="Foto ${driver.nama_lengkap}">` : 
+                        `<img src="../assets/images/avatar.png" class="avatar avatar-sm" alt="Foto Default">`;
+                    
+                    driverTable.row.add([
+                        foto,
+                        driver.kode_driver,
+                        driver.nama_lengkap,
+                        driver.no_telepon,
+                        `${driver.tipe_sim} - ${driver.no_sim}`,
+                        createStatusBadge(driver.status),
+                        actionsHtml
+                    ]);
+                });
+                
+                driverTable.draw();
+                
+                // Setup detail button event listeners
+                setupDetailButtonListeners(driverData);
+            } catch (error) {
+                console.error('Error loading driver data:', error);
+                showAlert('danger', 'Gagal memuat data driver');
+            }
+            
+            function setupDetailButtonListeners(driverData) {
+                document.querySelectorAll('.btn-detail').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const driverId = button.getAttribute('data-id');
+                        
+                        // Find driver in data
+                        const driver = driverData.find(d => d.id == driverId);
+                        
+                        if (driver) {
+                            // Populate modal with driver details
+                            document.getElementById('detailFoto').src = driver.foto || '../assets/images/avatar.png';
+                            document.getElementById('detailKode').textContent = driver.kode_driver;
+                            document.getElementById('detailNama').textContent = driver.nama_lengkap;
+                            document.getElementById('detailTanggalLahir').textContent = formatDateDisplay(driver.tanggal_lahir);
+                            document.getElementById('detailAlamat').textContent = driver.alamat;
+                            document.getElementById('detailTelepon').textContent = driver.no_telepon;
+                            document.getElementById('detailKTP').textContent = driver.no_ktp;
+                            document.getElementById('detailSIM').textContent = driver.no_sim;
+                            document.getElementById('detailTipeSIM').textContent = driver.tipe_sim;
+                            document.getElementById('detailTanggalBergabung').textContent = formatDateDisplay(driver.tanggal_bergabung);
+                            document.getElementById('detailCatatan').textContent = driver.catatan || 'Tidak ada catatan';
+                            
+                            // Set status badge
+                            const statusBadge = document.getElementById('detailStatus');
+                            statusBadge.textContent = driver.status === 'aktif' ? 'Aktif' : 'Tidak Aktif';
+                            statusBadge.className = `badge ${driver.status === 'aktif' ? 'bg-success' : 'bg-danger'} mb-2`;
+                            
+                            // Set edit button URL
+                            document.getElementById('detailEditButton').href = `driver-edit.html?id=${driver.id}`;
+                            
+                            // Show modal
+                            const detailModal = new bootstrap.Modal(document.getElementById('detailDriverModal'));
+                            detailModal.show();
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

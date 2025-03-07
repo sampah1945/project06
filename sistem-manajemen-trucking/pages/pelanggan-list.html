@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Pelanggan - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Daftar Pelanggan</h2>
+                    <a href="pelanggan-add.html" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Tambah Pelanggan
+                    </a>
+                </div>
+
+                <!-- Data Table Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="pelangganTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Kode</th>
+                                        <th>Nama Perusahaan</th>
+                                        <th>Alamat</th>
+                                        <th>Kontak</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Pelanggan -->
+    <div class="modal fade" id="detailPelangganModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Pelanggan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Informasi Perusahaan</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="35%">Kode Pelanggan</td>
+                                    <td width="5%">:</td>
+                                    <td width="60%" id="detailKode"></td>
+                                </tr>
+                                <tr>
+                                    <td>Nama Perusahaan</td>
+                                    <td>:</td>
+                                    <td id="detailNamaPerusahaan"></td>
+                                </tr>
+                                <tr>
+                                    <td>Alamat</td>
+                                    <td>:</td>
+                                    <td id="detailAlamat"></td>
+                                </tr>
+                                <tr>
+                                    <td>Kota</td>
+                                    <td>:</td>
+                                    <td id="detailKota"></td>
+                                </tr>
+                                <tr>
+                                    <td>Provinsi</td>
+                                    <td>:</td>
+                                    <td id="detailProvinsi"></td>
+                                </tr>
+                                <tr>
+                                    <td>Kode Pos</td>
+                                    <td>:</td>
+                                    <td id="detailKodePos"></td>
+                                </tr>
+                                <tr>
+                                    <td>NPWP</td>
+                                    <td>:</td>
+                                    <td id="detailNPWP"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Informasi Kontak</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="35%">Nama Kontak</td>
+                                    <td width="5%">:</td>
+                                    <td width="60%" id="detailNamaKontak"></td>
+                                </tr>
+                                <tr>
+                                    <td>Jabatan</td>
+                                    <td>:</td>
+                                    <td id="detailJabatan"></td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td>:</td>
+                                    <td id="detailEmail"></td>
+                                </tr>
+                                <tr>
+                                    <td>No. Telepon</td>
+                                    <td>:</td>
+                                    <td id="detailTelepon"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tanggal Registrasi</td>
+                                    <td>:</td>
+                                    <td id="detailTanggalRegistrasi"></td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>:</td>
+                                    <td id="detailStatus"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text-muted">Catatan</h6>
+                            <p id="detailCatatan" class="border p-2 rounded bg-light"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <a href="#" class="btn btn-warning" id="detailEditButton">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load sidebar and navbar
+            $("#sidebar-container").load("../components/sidebar.html", function() {
+                // Aktifkan menu yang sedang aktif
+                const activeMenu = document.querySelector("#sidebar .components li a[href='pelanggan-list.html']");
+                if (activeMenu) {
+                    activeMenu.parentElement.classList.add("active");
+                    const parentCollapse = activeMenu.closest(".collapse");
+                    if (parentCollapse) {
+                        parentCollapse.classList.add("show");
+                        const parentToggle = document.querySelector(`[data-bs-target="#${parentCollapse.id}"]`);
+                        if (parentToggle) {
+                            parentToggle.setAttribute("aria-expanded", "true");
+                        }
+                    }
+                }
+            });
+            
+            $("#navbar-container").load("../components/navbar.html");
+            
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Initialize DataTable
+            const pelangganTable = $('#pelangganTable').DataTable({
+                responsive: true,
+                order: [[1, 'asc']] // Sort by nama perusahaan ascending
+            });
+            
+            // Load pelanggan data
+            try {
+                const pelangganData = await window.api.getPelanggan();
+                
+                pelangganData.forEach(pelanggan => {
+                    const actionsHtml = `
+                        <button class="btn btn-sm btn-info me-1 btn-detail" data-id="${pelanggan.id}" title="Detail"><i class='bx bx-detail'></i></button>
+                        <a href="pelanggan-edit.html?id=${pelanggan.id}" class="btn btn-sm btn-warning me-1" title="Edit"><i class='bx bx-edit'></i></a>
+                    `;
+                    
+                    pelangganTable.row.add([
+                        pelanggan.kode_pelanggan,
+                        pelanggan.nama_perusahaan,
+                        `${pelanggan.alamat}, ${pelanggan.kota}, ${pelanggan.provinsi}`,
+                        `${pelanggan.nama_kontak}<br>${pelanggan.no_telepon}`,
+                        pelanggan.email || '-',
+                        createStatusBadge(pelanggan.status),
+                        actionsHtml
+                    ]);
+                });
+                
+                pelangganTable.draw();
+                
+                // Setup detail button event listeners
+                setupDetailButtonListeners();
+            } catch (error) {
+                console.error('Error loading pelanggan data:', error);
+                showAlert('danger', 'Gagal memuat data pelanggan');
+            }
+            
+            function setupDetailButtonListeners() {
+                document.querySelectorAll('.btn-detail').forEach(button => {
+                    button.addEventListener('click', async () => {
+                        const pelangganId = button.getAttribute('data-id');
+                        
+                        try {
+                            // In actual implementation, we would fetch the details from the API
+                            // For this example, we'll find the pelanggan in our already loaded data
+                            const pelanggan = pelangganData.find(p => p.id == pelangganId);
+                            
+                            if (pelanggan) {
+                                // Populate modal with pelanggan details
+                                document.getElementById('detailKode').textContent = pelanggan.kode_pelanggan;
+                                document.getElementById('detailNamaPerusahaan').textContent = pelanggan.nama_perusahaan;
+                                document.getElementById('detailAlamat').textContent = pelanggan.alamat;
+                                document.getElementById('detailKota').textContent = pelanggan.kota;
+                                document.getElementById('detailProvinsi').textContent = pelanggan.provinsi;
+                                document.getElementById('detailKodePos').textContent = pelanggan.kode_pos || '-';
+                                document.getElementById('detailNPWP').textContent = pelanggan.npwp || '-';
+                                document.getElementById('detailNamaKontak').textContent = pelanggan.nama_kontak;
+                                document.getElementById('detailJabatan').textContent = pelanggan.jabatan_kontak || '-';
+                                document.getElementById('detailEmail').textContent = pelanggan.email || '-';
+                                document.getElementById('detailTelepon').textContent = pelanggan.no_telepon;
+                                document.getElementById('detailTanggalRegistrasi').textContent = formatDateDisplay(pelanggan.tanggal_registrasi);
+                                document.getElementById('detailStatus').textContent = pelanggan.status === 'aktif' ? 'Aktif' : 'Tidak Aktif';
+                                document.getElementById('detailCatatan').textContent = pelanggan.catatan || '-';
+                                
+                                // Set edit button URL
+                                document.getElementById('detailEditButton').href = `pelanggan-edit.html?id=${pelanggan.id}`;
+                                
+                                // Show modal
+                                const detailModal = new bootstrap.Modal(document.getElementById('detailPelangganModal'));
+                                detailModal.show();
+                            }
+                        } catch (error) {
+                            console.error('Error fetching pelanggan details:', error);
+                            showAlert('danger', 'Gagal memuat detail pelanggan');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Pengiriman - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Tracking Pengiriman</h2>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTrackingModal">
+                        <i class='bx bx-plus'></i> Tambah Update Tracking
+                    </button>
+                </div>
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter</h5>
+                        <form id="filterForm">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="filterStatus" class="form-label">Status</label>
+                                    <select class="form-select" id="filterStatus">
+                                        <option value="">Semua Status</option>
+                                        <option value="ditugaskan">Ditugaskan</option>
+                                        <option value="pickup">Pickup</option>
+                                        <option value="dalam perjalanan">Dalam Perjalanan</option>
+                                        <option value="sampai tujuan">Sampai Tujuan</option>
+                                        <option value="selesai">Selesai</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterDriver" class="form-label">Driver</label>
+                                    <select class="form-select" id="filterDriver">
+                                        <option value="">Semua Driver</option>
+                                        <!-- Opsi driver akan diisi dengan JavaScript -->
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterStartDate" class="form-label">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="filterStartDate">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterEndDate" class="form-label">Tanggal Selesai</label>
+                                    <input type="date" class="form-control" id="filterEndDate">
+                                </div>
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" id="resetFilterButton" class="btn btn-outline-secondary me-2">Reset</button>
+                                    <button type="submit" class="btn btn-primary">Terapkan Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Data Table Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="trackingTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No. Booking</th>
+                                        <th>Tanggal Update</th>
+                                        <th>Driver</th>
+                                        <th>Armada</th>
+                                        <th>Status</th>
+                                        <th>Lokasi</th>
+                                        <th>Keterangan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Tracking -->
+    <div class="modal fade" id="addTrackingModal" tabindex="-1" aria-labelledby="addTrackingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTrackingModalLabel">Tambah Update Tracking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTrackingForm">
+                        <div class="mb-3">
+                            <label for="penugasanId" class="form-label">Penugasan</label>
+                            <select class="form-select" id="penugasanId" required>
+                                <option value="">Pilih Penugasan</option>
+                                <!-- Opsi penugasan akan diisi dengan JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" required>
+                                <option value="">Pilih Status</option>
+                                <option value="pickup">Pickup</option>
+                                <option value="dalam perjalanan">Dalam Perjalanan</option>
+                                <option value="sampai tujuan">Sampai Tujuan</option>
+                                <option value="selesai">Selesai</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lokasi" class="form-label">Lokasi</label>
+                            <input type="text" class="form-control" id="lokasi" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="keterangan" class="form-label">Keterangan</label>
+                            <textarea class="form-control" id="keterangan" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="foto" class="form-label">Foto (opsional)</label>
+                            <input type="file" class="form-control" id="foto" accept="image/*">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="saveTrackingButton">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Tracking -->
+    <div class="modal fade" id="detailTrackingModal" tabindex="-1" aria-labelledby="detailTrackingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailTrackingModalLabel">Detail Tracking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-muted">Informasi Booking</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="40%">No. Booking</td>
+                                    <td width="5%">:</td>
+                                    <td width="55%" id="detailNoBooking"></td>
+                                </tr>
+                                <tr>
+                                    <td>Pelanggan</td>
+                                    <td>:</td>
+                                    <td id="detailPelanggan"></td>
+                                </tr>
+                                <tr>
+                                    <td>Asal</td>
+                                    <td>:</td>
+                                    <td id="detailAsal"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tujuan</td>
+                                    <td>:</td>
+                                    <td id="detailTujuan"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-muted">Informasi Pengiriman</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="40%">Driver</td>
+                                    <td width="5%">:</td>
+                                    <td width="55%" id="detailDriver"></td>
+                                </tr>
+                                <tr>
+                                    <td>Armada</td>
+                                    <td>:</td>
+                                    <td id="detailArmada"></td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>:</td>
+                                    <td id="detailStatus"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tanggal Update</td>
+                                    <td>:</td>
+                                    <td id="detailTanggal"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5 class="text-muted">Detail Update</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="20%">Lokasi</td>
+                                    <td width="5%">:</td>
+                                    <td width="75%" id="detailLokasi"></td>
+                                </tr>
+                                <tr>
+                                    <td>Keterangan</td>
+                                    <td>:</td>
+                                    <td id="detailKeterangan"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-3" id="fotoContainer">
+                        <div class="col-12">
+                            <h5 class="text-muted">Foto</h5>
+                            <img id="detailFoto" src="" alt="Foto Tracking" class="img-fluid rounded" style="max-height: 300px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/sweetalert2.all.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Load components
+        $(function() {
+            $("#sidebar-container").load("../components/sidebar.html");
+            $("#navbar-container").load("../components/navbar.html");
+            
+            // Initialize after components are loaded
+            setTimeout(function() {
+                initPage();
+            }, 500);
+        });
+
+        function initPage() {
+            // Initialize DataTable
+            const trackingTable = $('#trackingTable').DataTable({
+                responsive: true,
+                language: {
+                    url: '../assets/js/dataTables.indonesian.json'
+                }
+            });
+
+            // Load data
+            loadTrackingData();
+            loadDrivers();
+            loadPenugasan();
+
+            // Event listeners
+            $('#filterForm').on('submit', function(e) {
+                e.preventDefault();
+                loadTrackingData();
+            });
+
+            $('#resetFilterButton').on('click', function() {
+                $('#filterForm')[0].reset();
+                loadTrackingData();
+            });
+
+            $('#saveTrackingButton').on('click', function() {
+                saveTracking();
+            });
+        }
+
+        function loadTrackingData() {
+            // Get filter values
+            const status = $('#filterStatus').val();
+            const driverId = $('#filterDriver').val();
+            const startDate = $('#filterStartDate').val();
+            const endDate = $('#filterEndDate').val();
+
+            // Clear table
+            $('#trackingTable').DataTable().clear();
+
+            // Show loading
+            Swal.fire({
+                title: 'Memuat Data',
+                text: 'Mohon tunggu...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Call API to get tracking data
+            window.api.getTrackingData({ status, driverId, startDate, endDate })
+                .then(data => {
+                    // Populate table
+                    const table = $('#trackingTable').DataTable();
+                    
+                    data.forEach(item => {
+                        table.row.add([
+                            item.nomor_booking,
+                            formatDateTime(item.tanggal_waktu),
+                            item.nama_driver,
+                            item.nomor_polisi,
+                            formatStatus(item.status),
+                            item.lokasi,
+                            item.keterangan,
+                            `<button type="button" class="btn btn-sm btn-info me-1" onclick="viewTrackingDetail(${item.id})"><i class='bx bx-show'></i></button>`
+                        ]);
+                    });
+                    
+                    table.draw();
+                    Swal.close();
+                })
+                .catch(err => {
+                    console.error('Error loading tracking data:', err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal memuat data tracking: ' + err.message
+                    });
+                });
+        }
+
+        function loadDrivers() {
+            window.api.getDrivers()
+                .then(drivers => {
+                    const select = $('#filterDriver');
+                    select.find('option:not(:first)').remove();
+                    
+                    drivers.forEach(driver => {
+                        select.append(`<option value="${driver.id}">${driver.nama_lengkap}</option>`);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error loading drivers:', err);
+                });
+        }
+
+        function loadPenugasan() {
+            window.api.getActivePenugasan()
+                .then(penugasan => {
+                    const select = $('#penugasanId');
+                    select.find('option:not(:first)').remove();
+                    
+                    penugasan.forEach(item => {
+                        select.append(`<option value="${item.id}">${item.nomor_booking} - ${item.nama_driver} (${item.nomor_polisi})</option>`);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error loading penugasan:', err);
+                });
+        }
+
+        function saveTracking() {
+            // Validate form
+            const form = document.getElementById('addTrackingForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Get form values
+            const penugasanId = $('#penugasanId').val();
+            const status = $('#status').val();
+            const lokasi = $('#lokasi').val();
+            const keterangan = $('#keterangan').val();
+            const fotoInput = document.getElementById('foto');
+            
+            // Show loading
+            Swal.fire({
+                title: 'Menyimpan Data',
+                text: 'Mohon tunggu...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Process photo if exists
+            let fotoBase64 = null;
+            if (fotoInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    fotoBase64 = e.target.result;
+                    // Save tracking with photo
+                    saveTrackingData(penugasanId, status, lokasi, keterangan, fotoBase64);
+                };
+                reader.readAsDataURL(fotoInput.files[0]);
+            } else {
+                // Save tracking without photo
+                saveTrackingData(penugasanId, status, lokasi, keterangan, null);
+            }
+        }
+
+        function saveTrackingData(penugasanId, status, lokasi, keterangan, foto) {
+            window.api.saveTracking({
+                penugasan_id: penugasanId,
+                status: status,
+                lokasi: lokasi,
+                keterangan: keterangan,
+                foto: foto
+            })
+            .then(result => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Data tracking berhasil disimpan'
+                });
+                
+                // Reset form and close modal
+                $('#addTrackingForm')[0].reset();
+                $('#addTrackingModal').modal('hide');
+                
+                // Reload data
+                loadTrackingData();
+                
+                // Update booking status if needed
+                if (status === 'selesai') {
+                    window.api.updateBookingStatus({
+                        penugasan_id: penugasanId,
+                        status: 'selesai'
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Error saving tracking:', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Gagal menyimpan data tracking: ' + err.message
+                });
+            });
+        }
+
+        function viewTrackingDetail(id) {
+            window.api.getTrackingDetail(id)
+                .then(data => {
+                    // Populate detail modal
+                    $('#detailNoBooking').text(data.nomor_booking);
+                    $('#detailPelanggan').text(data.nama_pelanggan);
+                    $('#detailAsal').text(data.asal);
+                    $('#detailTujuan').text(data.tujuan);
+                    $('#detailDriver').text(data.nama_driver);
+                    $('#detailArmada').text(data.nomor_polisi);
+                    $('#detailStatus').html(formatStatus(data.status));
+                    $('#detailTanggal').text(formatDateTime(data.tanggal_waktu));
+                    $('#detailLokasi').text(data.lokasi);
+                    $('#detailKeterangan').text(data.keterangan || '-');
+                    
+                    // Handle photo
+                    if (data.foto) {
+                        $('#detailFoto').attr('src', data.foto);
+                        $('#fotoContainer').show();
+                    } else {
+                        $('#fotoContainer').hide();
+                    }
+                    
+                    // Show modal
+                    $('#detailTrackingModal').modal('show');
+                })
+                .catch(err => {
+                    console.error('Error loading tracking detail:', err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal memuat detail tracking: ' + err.message
+                    });
+                });
+        }
+
+        function formatDateTime(dateTimeStr) {
+            const options = { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(dateTimeStr).toLocaleDateString('id-ID', options);
+        }
+
+        function formatStatus(status) {
+            let badgeClass = '';
+            switch(status.toLowerCase()) {
+                case 'ditugaskan':
+                    badgeClass = 'bg-secondary';
+                    break;
+                case 'pickup':
+                    badgeClass = 'bg-info';
+                    break;
+                case 'dalam perjalanan':
+                    badgeClass = 'bg-primary';
+                    break;
+                case 'sampai tujuan':
+                    badgeClass = 'bg-warning';
+                    break;
+                case 'selesai':
+                    badgeClass = 'bg-success';
+                    break;
+                default:
+                    badgeClass = 'bg-secondary';
+            }
+            return `<span class="badge ${badgeClass}">${status}</span>`;
+        }
+    </script>
+</body>
+</html>

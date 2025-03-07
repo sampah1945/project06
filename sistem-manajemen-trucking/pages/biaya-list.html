@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Biaya Operasional - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Daftar Biaya Operasional</h2>
+                    <a href="biaya-add.html" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Tambah Biaya
+                    </a>
+                </div>
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter</h5>
+                        <form id="filterForm">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="filterStatus" class="form-label">Status</label>
+                                    <select class="form-select" id="filterStatus">
+                                        <option value="">Semua Status</option>
+                                        <option value="diajukan">Diajukan</option>
+                                        <option value="disetujui">Disetujui</option>
+                                        <option value="ditolak">Ditolak</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterJenisBiaya" class="form-label">Jenis Biaya</label>
+                                    <select class="form-select" id="filterJenisBiaya">
+                                        <option value="">Semua Jenis</option>
+                                        <option value="BBM">BBM</option>
+                                        <option value="Tol">Tol</option>
+                                        <option value="Uang Makan Driver">Uang Makan Driver</option>
+                                        <option value="Biaya Lift On/Off">Biaya Lift On/Off</option>
+                                        <option value="Perbaikan Kendaraan">Perbaikan Kendaraan</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterStartDate" class="form-label">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="filterStartDate">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterEndDate" class="form-label">Tanggal Selesai</label>
+                                    <input type="date" class="form-control" id="filterEndDate">
+                                </div>
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" id="resetFilterButton" class="btn btn-outline-secondary me-2">Reset</button>
+                                    <button type="submit" class="btn btn-primary">Terapkan Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Biaya</h6>
+                                        <h3 class="fw-bold" id="totalBiaya">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-primary text-white rounded p-3">
+                                        <i class='bx bxs-wallet fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Biaya Disetujui</h6>
+                                        <h3 class="fw-bold" id="biayaDisetujui">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-success text-white rounded p-3">
+                                        <i class='bx bxs-check-circle fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Menunggu Persetujuan</h6>
+                                        <h3 class="fw-bold" id="biayaMenunggu">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-warning text-white rounded p-3">
+                                        <i class='bx bxs-time fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="biayaTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tanggal</th>
+                                        <th>Nomor Booking</th>
+                                        <th>Jenis Biaya</th>
+                                        <th>Jumlah</th>
+                                        <th>Keterangan</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Update Status -->
+    <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Status Biaya</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStatusForm">
+                        <input type="hidden" id="updateBiayaId">
+                        <div class="mb-3">
+                            <label for="updateJenisBiaya" class="form-label">Jenis Biaya</label>
+                            <input type="text" class="form-control" id="updateJenisBiaya" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateJumlah" class="form-label">Jumlah</label>
+                            <input type="text" class="form-control" id="updateJumlah" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateKeterangan" class="form-label">Keterangan</label>
+                            <textarea class="form-control" id="updateKeterangan" rows="2" readonly></textarea>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label for="updateStatus" class="form-label">Status</label>
+                            <select class="form-select" id="updateStatus" required>
+                                <option value="">Pilih Status</option>
+                                <option value="disetujui">Disetujui</option>
+                                <option value="ditolak">Ditolak</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="updateStatusSubmitButton">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Bukti -->
+    <div class="modal fade" id="detailBuktiModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bukti Transaksi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="buktiImage" src="" alt="Bukti Transaksi" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load sidebar and navbar
+            $("#sidebar-container").load("../components/sidebar.html", function() {
+                // Aktifkan menu yang sedang aktif
+                const activeMenu = document.querySelector("#sidebar .components li a[href='biaya-list.html']");
+                if (activeMenu) {
+                    activeMenu.parentElement.classList.add("active");
+                    const parentCollapse = activeMenu.closest(".collapse");
+                    if (parentCollapse) {
+                        parentCollapse.classList.add("show");
+                        const parentToggle = document.querySelector(`[data-bs-target="#${parentCollapse.id}"]`);
+                        if (parentToggle) {
+                            parentToggle.setAttribute("aria-expanded", "true");
+                        }
+                    }
+                }
+            });
+            
+            $("#navbar-container").load("../components/navbar.html");
+            
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Initialize DataTable
+            const biayaTable = $('#biayaTable').DataTable({
+                responsive: true,
+                order: [[1, 'desc']] // Sort by tanggal column descending
+            });
+            
+            // Filter form handling
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await loadBiayaData();
+            });
+            
+            // Reset filter button
+            document.getElementById('resetFilterButton').addEventListener('click', () => {
+                filterForm.reset();
+            });
+            
+            // Initial loading of biaya data
+            await loadBiayaData();
+            
+            // Function to load biaya data with filters
+            async function loadBiayaData() {
+                try {
+                    const filter = {
+                        status: document.getElementById('filterStatus').value,
+                        jenisBiaya: document.getElementById('filterJenisBiaya').value,
+                        startDate: document.getElementById('filterStartDate').value,
+                        endDate: document.getElementById('filterEndDate').value
+                    };
+                    
+                    const biayaData = await window.api.getBiayaOperasional(filter);
+                    
+                    // Clear existing data
+                    biayaTable.clear();
+                    
+                    // Calculate summary data
+                    let totalBiaya = 0;
+                    let biayaDisetujui = 0;
+                    let biayaMenunggu = 0;
+                    
+                    // Add new data
+                    biayaData.forEach(biaya => {
+                        totalBiaya += biaya.jumlah;
+                        
+                        if (biaya.status === 'disetujui') {
+                            biayaDisetujui += biaya.jumlah;
+                        } else if (biaya.status === 'diajukan') {
+                            biayaMenunggu += biaya.jumlah;
+                        }
+                        
+                        // Get related booking info
+                        let bookingInfo = biaya.nomor_booking || '-';
+                        
+                        // Create action buttons
+                        const actionsHtml = `
+                            ${biaya.bukti_transaksi ? `<button class="btn btn-sm btn-info me-1 btn-view-bukti" data-bukti="${biaya.bukti_transaksi}" title="Lihat Bukti"><i class='bx bx-image'></i></button>` : ''}
+                            ${biaya.status === 'diajukan' ? `<button class="btn btn-sm btn-primary me-1 btn-update-status" data-id="${biaya.id}" data-jenis="${biaya.jenis_biaya}" data-jumlah="${biaya.jumlah}" data-keterangan="${biaya.keterangan || ''}" title="Update Status"><i class='bx bx-check-circle'></i></button>` : ''}
+                        `;
+                        
+                        biayaTable.row.add([
+                            biaya.id,
+                            formatDateDisplay(biaya.tanggal),
+                            bookingInfo,
+                            biaya.jenis_biaya,
+                            formatRupiah(biaya.jumlah),
+                            biaya.keterangan || '-',
+                            createStatusBadge(biaya.status),
+                            actionsHtml
+                        ]);
+                    });
+                    
+                    // Redraw the table
+                    biayaTable.draw();
+                    
+                    // Update summary cards
+                    document.getElementById('totalBiaya').textContent = formatRupiah(totalBiaya);
+                    document.getElementById('biayaDisetujui').textContent = formatRupiah(biayaDisetujui);
+                    document.getElementById('biayaMenunggu').textContent = formatRupiah(biayaMenunggu);
+                    
+                    // Setup action button event listeners
+                    setupActionButtonEventListeners();
+                } catch (error) {
+                    console.error('Error loading biaya data:', error);
+                    showAlert('danger', 'Gagal memuat data biaya operasional');
+                }
+            }
+            
+            // Setup event listeners for dynamically created action buttons
+            function setupActionButtonEventListeners() {
+                // View bukti button click
+                document.querySelectorAll('.btn-view-bukti').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const buktiBase64 = button.getAttribute('data-bukti');
+                        
+                        if (buktiBase64) {
+                            document.getElementById('buktiImage').src = buktiBase64;
+                            
+                            // Show the modal
+                            const detailBuktiModal = new bootstrap.Modal(document.getElementById('detailBuktiModal'));
+                            detailBuktiModal.show();
+                        }
+                    });
+                });
+                
+                // Update status button click
+                document.querySelectorAll('.btn-update-status').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const biayaId = button.getAttribute('data-id');
+                        const jenisBiaya = button.getAttribute('data-jenis');
+                        const jumlah = button.getAttribute('data-jumlah');
+                        const keterangan = button.getAttribute('data-keterangan');
+                        
+                        document.getElementById('updateBiayaId').value = biayaId;
+                        document.getElementById('updateJenisBiaya').value = jenisBiaya;
+                        document.getElementById('updateJumlah').value = formatRupiah(jumlah);
+                        document.getElementById('updateKeterangan').value = keterangan;
+                        
+                        // Clear previous status selection
+                        document.getElementById('updateStatus').value = '';
+                        
+                        // Show the modal
+                        const updateStatusModal = new bootstrap.Modal(document.getElementById('updateStatusModal'));
+                        updateStatusModal.show();
+                    });
+                });
+            }
+            
+            // Handle update status form submission
+            document.getElementById('updateStatusSubmitButton').addEventListener('click', async () => {
+                const biayaId = document.getElementById('updateBiayaId').value;
+                const status = document.getElementById('updateStatus').value;
+                
+                if (!status) {
+                    alert('Silakan pilih status');
+                    return;
+                }
+                
+                try {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    
+                    await window.api.updateBiayaStatus({
+                        id: biayaId,
+                        status: status,
+                        disetujui_oleh: user.id
+                    });
+                    
+                    // Close the modal
+                    bootstrap.Modal.getInstance(document.getElementById('updateStatusModal')).hide();
+                    
+                    // Reload biaya data
+                    await loadBiayaData();
+                    
+                    showAlert('success', 'Status biaya berhasil diperbarui');
+                } catch (error) {
+                    console.error('Error updating biaya status:', error);
+                    showAlert('danger', 'Gagal memperbarui status biaya');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

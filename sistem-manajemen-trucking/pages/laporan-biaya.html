@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Biaya Operasional - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="../assets/css/chart.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Laporan Biaya Operasional</h2>
+                    <div>
+                        <button id="printReport" class="btn btn-outline-primary me-2">
+                            <i class='bx bx-printer'></i> Cetak
+                        </button>
+                        <button id="exportExcel" class="btn btn-success">
+                            <i class='bx bx-spreadsheet'></i> Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter</h5>
+                        <form id="filterForm">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="filterStartDate" class="form-label">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="filterStartDate" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterEndDate" class="form-label">Tanggal Selesai</label>
+                                    <input type="date" class="form-control" id="filterEndDate" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterGroupBy" class="form-label">Tampilkan Per</label>
+                                    <select class="form-select" id="filterGroupBy">
+                                        <option value="kategori">Kategori</option>
+                                        <option value="jenisbiaya">Jenis Biaya</option>
+                                        <option value="daily">Harian</option>
+                                        <option value="monthly" selected>Bulanan</option>
+                                        <option value="yearly">Tahunan</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">Tampilkan Laporan</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Biaya</h6>
+                                        <h3 class="fw-bold" id="totalBiaya">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-primary text-white rounded p-3">
+                                        <i class='bx bxs-wallet fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Rata-rata per Bulan</h6>
+                                        <h3 class="fw-bold" id="avgPerBulan">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-success text-white rounded p-3">
+                                        <i class='bx bxs-bar-chart-alt-2 fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Kategori Terbesar</h6>
+                                        <h3 class="fw-bold" id="topKategori">-</h3>
+                                    </div>
+                                    <div class="bg-info text-white rounded p-3">
+                                        <i class='bx bxs-category fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row mb-4">
+                    <div class="col-lg-8 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Grafik Biaya Operasional</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="biayaChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Distribusi Biaya per Kategori</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="kategoriChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Biaya Detail Table Section -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0">Detail Biaya Operasional</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="biayaTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Periode</th>
+                                        <th>Jumlah Transaksi</th>
+                                        <th>Total Biaya</th>
+                                        <th>Transportasi</th>
+                                        <th>Akomodasi</th>
+                                        <th>Operasional</th>
+                                        <th>Pemeliharaan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fw-bold">
+                                        <td>Total</td>
+                                        <td id="footerTransaksi">0</td>
+                                        <td id="footerBiaya">Rp 0</td>
+                                        <td id="footerTransportasi">Rp 0</td>
+                                        <td id="footerAkomodasi">Rp 0</td>
+                                        <td id="footerOperasional">Rp 0</td>
+                                        <td id="footerPemeliharaan">Rp 0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Expenses Section -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0">Top 5 Jenis Biaya Terbesar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Jenis Biaya</th>
+                                        <th>Kategori</th>
+                                        <th>Jumlah Transaksi</th>
+                                        <th>Total Biaya</th>
+                                        <th>Persentase</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topExpensesTable">
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/chart.min.js"></script>
+    <script src="../assets/js/xlsx.full.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set default date range (current month)
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastYear = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+            
+            document.getElementById('filterStartDate').value = formatDateInput(lastYear);
+            document.getElementById('filterEndDate').value = formatDateInput(today);
+            
+            // Initialize DataTable
+            const biayaTable = $('#biayaTable').DataTable({
+                responsive: true,
+                paging: false,
+                searching: false,
+                info: false
+            });
+            
+            // Filter form handling
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await loadBiayaData();
+            });
+            
+            // Print report button
+            document.getElementById('printReport').addEventListener('click', () => {
+                window.print();
+            });
+            
+            // Export to Excel button
+            document.getElementById('exportExcel').addEventListener('click', () => {
+                exportToExcel();
+            });
+            
+            // Initial loading of biaya data
+            await loadBiayaData();
+            
+            // Function to load biaya data
+            async function loadBiayaData() {
+                try {
+                    const startDate = document.getElementById('filterStartDate').value;
+                    const endDate = document.getElementById('filterEndDate').value;
+                    const groupBy = document.getElementById('filterGroupBy').value;
+                    
+                    if (!startDate || !endDate) {
+                        showAlert('warning', 'Silakan pilih rentang tanggal terlebih dahulu');
+                        return;
+                    }
+                    
+                    // Get data from API
+                    const biayaData = await window.api.getLaporanBiaya({
+                        startDate,
+                        endDate,
+                        groupBy
+                    });
+                    
+                    // Create dummy data for the demo
+                    let biayaDataPeriods = [];
+                    
+                    // Generate dummy periods based on groupBy
+                    if (groupBy === 'daily') {
+                        // Generate dates from startDate to endDate
+                        const start = new Date(startDate);
+                        const end = new Date(endDate);
+                        for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+                            biayaDataPeriods.push({
+                                period: new Date(date),
+                                transactions: Math.floor(Math.random() * 4) + 1,
+                                total: Math.floor(Math.random() * 2000000) + 500000,
+                                transportasi: Math.floor(Math.random() * 1000000) + 200000,
+                                akomodasi: Math.floor(Math.random() * 500000) + 100000,
+                                operasional: Math.floor(Math.random() * 300000) + 100000,
+                                pemeliharaan: Math.floor(Math.random() * 200000) + 100000
+                            });
+                        }
+                    } else if (groupBy === 'monthly') {
+                        // Generate monthly data
+                        for (let i = 0; i < 12; i++) {
+                            const date = new Date(today.getFullYear(), i, 1);
+                            biayaDataPeriods.push({
+                                period: date,
+                                transactions: Math.floor(Math.random() * 30) + 10,
+                                total: Math.floor(Math.random() * 20000000) + 5000000,
+                                transportasi: Math.floor(Math.random() * 10000000) + 2000000,
+                                akomodasi: Math.floor(Math.random() * 5000000) + 1000000,
+                                operasional: Math.floor(Math.random() * 3000000) + 1000000,
+                                pemeliharaan: Math.floor(Math.random() * 2000000) + 1000000
+                            });
+                        }
+                    } else if (groupBy === 'yearly') {
+                        // Generate yearly data
+                        for (let i = 0; i < 5; i++) {
+                            const year = today.getFullYear() - i;
+                            biayaDataPeriods.push({
+                                period: new Date(year, 0, 1),
+                                transactions: Math.floor(Math.random() * 300) + 100,
+                                total: Math.floor(Math.random() * 200000000) + 50000000,
+                                transportasi: Math.floor(Math.random() * 100000000) + 20000000,
+                                akomodasi: Math.floor(Math.random() * 50000000) + 10000000,
+                                operasional: Math.floor(Math.random() * 30000000) + 10000000,
+                                pemeliharaan: Math.floor(Math.random() * 20000000) + 10000000
+                            });
+                        }
+                    } else if (groupBy === 'kategori') {
+                        // Generate data per kategori
+                        const kategories = ['Transportasi', 'Akomodasi', 'Operasional', 'Pemeliharaan'];
+                        for (const kategori of kategories) {
+                            biayaDataPeriods.push({
+                                period: kategori,
+                                transactions: Math.floor(Math.random() * 100) + 50,
+                                total: Math.floor(Math.random() * 50000000) + 10000000,
+                                transportasi: kategori === 'Transportasi' ? Math.floor(Math.random() * 50000000) + 10000000 : 0,
+                                akomodasi: kategori === 'Akomodasi' ? Math.floor(Math.random() * 50000000) + 10000000 : 0,
+                                operasional: kategori === 'Operasional' ? Math.floor(Math.random() * 50000000) + 10000000 : 0,
+                                pemeliharaan: kategori === 'Pemeliharaan' ? Math.floor(Math.random() * 50000000) + 10000000 : 0
+                            });
+                        }
+                    } else if (groupBy === 'jenisbiaya') {
+                        // Generate data per jenis biaya
+                        const jenisBiaya = ['BBM', 'Tol', 'Uang Makan Driver', 'Biaya Lift On/Off', 'Perbaikan Kendaraan'];
+                        const kategories = ['Transportasi', 'Transportasi', 'Akomodasi', 'Operasional', 'Pemeliharaan'];
+                        for (let i = 0; i < jenisBiaya.length; i++) {
+                            const jenis = jenisBiaya[i];
+                            const kategori = kategories[i];
+                            biayaDataPeriods.push({
+                                period: jenis,
+                                transactions: Math.floor(Math.random() * 100) + 50,
+                                total: Math.floor(Math.random() * 50000000) + 10000000,
+                                transportasi: kategori === 'Transportasi' ? Math.floor(Math.random() * 50000000) + 10000000 : 0,
+                                akomodasi: kategori === 'Akomodasi' ? Math.floor(Math.random() * 50000000) + 10000000 : 0,
+                                operasional: kategori === 'Operasional' ? Math.floor(Math.random() * 50000000) + 10000000 : 0,
+                                pemeliharaan: kategori === 'Pemeliharaan' ? Math.floor(Math.random() * 50000000) + 10000000 : 0,
+                                kategori: kategori
+                            });
+                        }
+                    }
+                    
+                    // Process the data for visualization
+                    const periods = [];
+                    const values = [];
+                    let totalBiaya = 0;
+                    let totalTransaksi = 0;
+                    let totalTransportasi = 0;
+                    let totalAkomodasi = 0;
+                    let totalOperasional = 0;
+                    let totalPemeliharaan = 0;
+                    
+                    // Clear existing data
+                    biayaTable.clear();
+                    
+                    // Add data to table and calculate totals
+                    biayaDataPeriods.forEach(item => {
+                        totalBiaya += item.total;
+                        totalTransaksi += item.transactions;
+                        totalTransportasi += item.transportasi;
+                        totalAkomodasi += item.akomodasi;
+                        totalOperasional += item.operasional;
+                        totalPemeliharaan += item.pemeliharaan;
+                        
+                        let periodLabel;
+                        if (groupBy === 'daily') {
+                            periodLabel = formatDateDisplay(item.period);
+                        } else if (groupBy === 'monthly') {
+                            periodLabel = item.period.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+                        } else if (groupBy === 'yearly') {
+                            periodLabel = item.period.getFullYear().toString();
+                        } else {
+                            periodLabel = item.period;
+                        }
+                        
+                        periods.push(periodLabel);
+                        values.push(item.total);
+                        
+                        biayaTable.row.add([
+                            periodLabel,
+                            item.transactions,
+                            formatRupiah(item.total),
+                            formatRupiah(item.transportasi),
+                            formatRupiah(item.akomodasi),
+                            formatRupiah(item.operasional),
+                            formatRupiah(item.pemeliharaan)
+                        ]);
+                    });
+                    
+                    // Redraw the table
+                    biayaTable.draw();
+                    
+                    // Update table footer
+                    document.getElementById('footerTransaksi').textContent = totalTransaksi;
+                    document.getElementById('footerBiaya').textContent = formatRupiah(totalBiaya);
+                    document.getElementById('footerTransportasi').textContent = formatRupiah(totalTransportasi);
+                    document.getElementById('footerAkomodasi').textContent = formatRupiah(totalAkomodasi);
+                    document.getElementById('footerOperasional').textContent = formatRupiah(totalOperasional);
+                    document.getElementById('footerPemeliharaan').textContent = formatRupiah(totalPemeliharaan);
+                    
+                    // Update summary cards
+                    document.getElementById('totalBiaya').textContent = formatRupiah(totalBiaya);
+                    
+                    const avgMonthly = totalBiaya / 12; // Simplified calculation
+                    document.getElementById('avgPerBulan').textContent = formatRupiah(avgMonthly);
+                    
+                    // Find the largest category
+                    const categories = [
+                        { name: 'Transportasi', value: totalTransportasi },
+                        { name: 'Akomodasi', value: totalAkomodasi },
+                        { name: 'Operasional', value: totalOperasional },
+                        { name: 'Pemeliharaan', value: totalPemeliharaan }
+                    ];
+                    const largestCategory = categories.reduce((prev, current) => {
+                        return (prev.value > current.value) ? prev : current;
+                    });
+                    document.getElementById('topKategori').textContent = largestCategory.name;
+                    
+                    // Create biaya chart
+                    createBiayaChart(periods, values, groupBy);
+                    
+                    // Create kategori chart
+                    createKategoriChart(categories);
+                    
+                    // Create top expenses table
+                    if (groupBy === 'jenisbiaya') {
+                        createTopExpensesTable(biayaDataPeriods, totalBiaya);
+                    } else {
+                        // Generate dummy data for top expenses
+                        const jenisBiaya = ['BBM', 'Tol', 'Uang Makan Driver', 'Biaya Lift On/Off', 'Perbaikan Kendaraan'];
+                        const kategories = ['Transportasi', 'Transportasi', 'Akomodasi', 'Operasional', 'Pemeliharaan'];
+                        const topExpenses = [];
+                        for (let i = 0; i < jenisBiaya.length; i++) {
+                            topExpenses.push({
+                                period: jenisBiaya[i],
+                                transactions: Math.floor(Math.random() * 100) + 50,
+                                total: Math.floor(Math.random() * 50000000) + 10000000,
+                                kategori: kategories[i]
+                            });
+                        }
+                        // Sort by total descending
+                        topExpenses.sort((a, b) => b.total - a.total);
+                        createTopExpensesTable(topExpenses, totalBiaya);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error loading biaya data:', error);
+                    showAlert('danger', 'Gagal memuat data biaya operasional');
+                }
+            }
+            
+            // Function to create biaya chart
+            function createBiayaChart(periods, values, groupBy) {
+                const ctx = document.getElementById('biayaChart').getContext('2d');
+                
+                if (window.biayaChartInstance) {
+                    window.biayaChartInstance.destroy();
+                }
+                
+                let chartType = 'bar';
+                if (groupBy === 'kategori' || groupBy === 'jenisbiaya') {
+                    chartType = 'horizontalBar';
+                }
+                
+                window.biayaChartInstance = new Chart(ctx, {
+                    type: chartType,
+                    data: {
+                        labels: periods,
+                        datasets: [{
+                            label: 'Biaya Operasional',
+                            data: values,
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    callback: function(value) {
+                                        return formatRupiah(value);
+                                    }
+                                }
+                            }],
+                            xAxes: [{
+                                ticks: {
+                                    autoSkip: true,
+                                    maxTicksLimit: 10
+                                }
+                            }]
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return data.datasets[tooltipItem.datasetIndex].label + ': ' + formatRupiah(tooltipItem.yLabel);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Function to create kategori chart
+            function createKategoriChart(categories) {
+                const ctx = document.getElementById('kategoriChart').getContext('2d');
+                
+                if (window.kategoriChartInstance) {
+                    window.kategoriChartInstance.destroy();
+                }
+                
+                window.kategoriChartInstance = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: categories.map(c => c.name),
+                        datasets: [{
+                            data: categories.map(c => c.value),
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 206, 86, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(153, 102, 255, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    const value = data.datasets[0].data[tooltipItem.index];
+                                    const label = data.labels[tooltipItem.index];
+                                    const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${formatRupiah(value)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Function to create top expenses table
+            function createTopExpensesTable(expenses, totalBiaya) {
+                const topExpensesTable = document.getElementById('topExpensesTable');
+                topExpensesTable.innerHTML = '';
+                
+                // Sort expenses by total descending
+                const sortedExpenses = [...expenses].sort((a, b) => b.total - a.total);
+                
+                // Take top 5
+                const top5Expenses = sortedExpenses.slice(0, 5);
+                
+                top5Expenses.forEach(expense => {
+                    const percentage = ((expense.total / totalBiaya) * 100).toFixed(1);
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${expense.period}</td>
+                        <td>${expense.kategori}</td>
+                        <td>${expense.transactions}</td>
+                        <td>${formatRupiah(expense.total)}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: ${percentage}%"></div>
+                                </div>
+                                <span>${percentage}%</span>
+                            </div>
+                        </td>
+                    `;
+                    
+                    topExpensesTable.appendChild(row);
+                });
+            }
+            
+            // Function to export data to Excel
+            function exportToExcel() {
+                try {
+                    const startDate = document.getElementById('filterStartDate').value;
+                    const endDate = document.getElementById('filterEndDate').value;
+                    const groupBy = document.getElementById('filterGroupBy').value;
+                    
+                    // Create a new workbook
+                    const wb = XLSX.utils.book_new();
+                    
+                    // Extract data from DataTable
+                    const tableData = biayaTable.data().toArray();
+                    
+                    // Create headers
+                    const headers = ['Periode', 'Jumlah Transaksi', 'Total Biaya', 'Transportasi', 'Akomodasi', 'Operasional', 'Pemeliharaan'];
+                    
+                    // Clean data (remove HTML tags, convert currency to numbers)
+                    const cleanData = tableData.map(row => {
+                        return row.map(cell => {
+                            // Create a temporary div to parse HTML and get text content
+                            const div = document.createElement('div');
+                            div.innerHTML = cell;
+                            // For Rupiah values, remove the Rp prefix and dots
+                            let text = div.textContent || div.innerText || '';
+                            if (text.startsWith('Rp ')) {
+                                text = text.replace('Rp ', '').replace(/\./g, '');
+                            }
+                            return text;
+                        });
+                    });
+                    
+                    // Add headers to data
+                    const excelData = [headers, ...cleanData];
+                    
+                    // Get footer data and add as last row
+                    const footerData = [
+                        'Total',
+                        document.getElementById('footerTransaksi').textContent,
+                        document.getElementById('footerBiaya').textContent.replace('Rp ', '').replace(/\./g, ''),
+                        document.getElementById('footerTransportasi').textContent.replace('Rp ', '').replace(/\./g, ''),
+                        document.getElementById('footerAkomodasi').textContent.replace('Rp ', '').replace(/\./g, ''),
+                        document.getElementById('footerOperasional').textContent.replace('Rp ', '').replace(/\./g, ''),
+                        document.getElementById('footerPemeliharaan').textContent.replace('Rp ', '').replace(/\./g, '')
+                    ];
+                    
+                    excelData.push(footerData);
+                    
+                    // Create a worksheet
+                    const ws = XLSX.utils.aoa_to_sheet(excelData);
+                    
+                    // Add worksheet to workbook
+                    XLSX.utils.book_append_sheet(wb, ws, 'Laporan Biaya Operasional');
+                    
+                    // Generate Excel file
+                    const groupByText = groupBy === 'daily' ? 'Harian' : (groupBy === 'monthly' ? 'Bulanan' : (groupBy === 'yearly' ? 'Tahunan' : (groupBy === 'kategori' ? 'Kategori' : 'Jenis Biaya')));
+                    XLSX.writeFile(wb, `Laporan_Biaya_Operasional_${groupByText}_${startDate}_${endDate}.xlsx`);
+                    
+                } catch (error) {
+                    console.error('Error exporting to Excel:', error);
+                    showAlert('danger', 'Gagal mengekspor ke Excel');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+                <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Biaya Operasional - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="../assets/css/chart.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Laporan Biaya Operasional</h2>
+                    <div>
+                        <button id="printReport" class="btn btn-outline-primary me-2">
+                            <i class='bx bx-printer'></i> Cetak
+                        </button>
+                        <button id="exportExcel" class="btn btn-success">
+                            <i class='bx bx-spreadsheet'></i> Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter</h5>
+                        <form id="filterForm">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="filterStartDate" class="form-label">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="filterStartDate" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterEndDate" class="form-label">Tanggal Selesai</label>
+                                    <input type="date" class="form-control" id="filterEndDate" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterGroupBy" class="form-label">Tampilkan Per</label>
+                                    <select class="form-select" id="filterGroupBy">
+                                        <option value="kategori">Kategori</option>
+                                        <option value="jenisbiaya">Jenis Biaya</option>
+                                        <option value="daily">Harian</option>
+                                        <option value="monthly" selected>Bulanan</option>
+                                        <option value="yearly">Tahunan</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">Tampilkan Laporan</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Biaya</h6>
+                                        <h3 class="fw-bold" id="totalBiaya">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-primary text-white rounded p-3">
+                                        <i class='bx bxs-wallet fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items

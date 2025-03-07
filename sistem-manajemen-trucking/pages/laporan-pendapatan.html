@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Pendapatan - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="../assets/css/chart.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Laporan Pendapatan</h2>
+                    <div>
+                        <button id="printReport" class="btn btn-outline-primary me-2">
+                            <i class='bx bx-printer'></i> Cetak
+                        </button>
+                        <button id="exportExcel" class="btn btn-success">
+                            <i class='bx bx-spreadsheet'></i> Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter</h5>
+                        <form id="filterForm">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="filterStartDate" class="form-label">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="filterStartDate" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterEndDate" class="form-label">Tanggal Selesai</label>
+                                    <input type="date" class="form-control" id="filterEndDate" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterGroupBy" class="form-label">Tampilkan Per</label>
+                                    <select class="form-select" id="filterGroupBy">
+                                        <option value="daily">Harian</option>
+                                        <option value="monthly" selected>Bulanan</option>
+                                        <option value="yearly">Tahunan</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">Tampilkan Laporan</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Pendapatan</h6>
+                                        <h3 class="fw-bold" id="totalPendapatan">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-primary text-white rounded p-3">
+                                        <i class='bx bxs-dollar-circle fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Rata-rata per Bulan</h6>
+                                        <h3 class="fw-bold" id="avgPerBulan">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-success text-white rounded p-3">
+                                        <i class='bx bxs-bar-chart-alt-2 fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Invoice</h6>
+                                        <h3 class="fw-bold" id="totalInvoice">0</h3>
+                                    </div>
+                                    <div class="bg-info text-white rounded p-3">
+                                        <i class='bx bxs-file-invoice fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row mb-4">
+                    <div class="col-lg-8 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Grafik Pendapatan</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="pendapatanChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0">Pendapatan per Layanan</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="layananChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pendapatan Table Section -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0">Detail Pendapatan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="pendapatanTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Periode</th>
+                                        <th>Jumlah Invoice</th>
+                                        <th>Total Pendapatan</th>
+                                        <th>Port to Warehouse</th>
+                                        <th>Warehouse to Port</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fw-bold">
+                                        <td>Total</td>
+                                        <td id="footerInvoice">0</td>
+                                        <td id="footerPendapatan">Rp 0</td>
+                                        <td id="footerPW">Rp 0</td>
+                                        <td id="footerWP">Rp 0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Customers Section -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0">Top 5 Pelanggan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Pelanggan</th>
+                                        <th>Jumlah Invoice</th>
+                                        <th>Total Pendapatan</th>
+                                        <th>Persentase</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topCustomersTable">
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/chart.min.js"></script>
+    <script src="../assets/js/xlsx.full.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set default date range (current month)
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastYear = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+            
+            document.getElementById('filterStartDate').value = formatDateInput(lastYear);
+            document.getElementById('filterEndDate').value = formatDateInput(today);
+            
+            // Initialize DataTable
+            const pendapatanTable = $('#pendapatanTable').DataTable({
+                responsive: true,
+                paging: false,
+                searching: false,
+                info: false
+            });
+            
+            // Filter form handling
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await loadPendapatanData();
+            });
+            
+            // Print report button
+            document.getElementById('printReport').addEventListener('click', () => {
+                window.print();
+            });
+            
+            // Export to Excel button
+            document.getElementById('exportExcel').addEventListener('click', () => {
+                exportToExcel();
+            });
+            
+            // Initial loading of pendapatan data
+            await loadPendapatanData();
+            
+            // Function to load pendapatan data
+            async function loadPendapatanData() {
+                try {
+                    const startDate = document.getElementById('filterStartDate').value;
+                    const endDate = document.getElementById('filterEndDate').value;
+                    const groupBy = document.getElementById('filterGroupBy').value;
+                    
+                    if (!startDate || !endDate) {
+                        showAlert('warning', 'Silakan pilih rentang tanggal terlebih dahulu');
+                        return;
+                    }
+                    
+                    // Get pendapatan data
+                    const pendapatanData = await window.api.getLaporanPendapatan({
+                        startDate,
+                        endDate,
+                        groupBy
+                    });
+                    
+                    // Process the data for visualization
+                    const periods = [];
+                    const values = [];
+                    let totalPendapatan = 0;
+                    let periodCount = 0;
+                    let totalInvoice = 0;
+                    
+                    // Clear existing data
+                    pendapatanTable.clear();
+                    
+                    // Data for service breakdown
+                    let pwTotal = 0;
+                    let wpTotal = 0;
+                    
+                    // For demonstration, let's generate some dummy data
+                    // In a real implementation, this data would come from the API
+                    pendapatanData.forEach(item => {
+                        periodCount++;
+                        
+                        let periodLabel;
+                        if (groupBy === 'daily') {
+                            periodLabel = formatDateDisplay(item.tanggal || item.date);
+                        } else if (groupBy === 'monthly') {
+                            const [year, month] = (item.bulan || item.month).split('-');
+                            periodLabel = new Date(parseInt(year), parseInt(month) - 1, 1)
+                                .toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+                        } else {
+                            periodLabel = (item.tahun || item.year).toString();
+                        }
+                        
+                        periods.push(periodLabel);
+                        values.push(item.total);
+                        totalPendapatan += item.total;
+                        
+                        // Generate random invoice count and service breakdown for demo
+                        const invoiceCount = Math.floor(item.total / 2500000) + 1;
+                        totalInvoice += invoiceCount;
+                        
+                        // Random service breakdown (60-40 split for demo)
+                        const pwAmount = item.total * 0.6;
+                        const wpAmount = item.total * 0.4;
+                        pwTotal += pwAmount;
+                        wpTotal += wpAmount;
+                        
+                        pendapatanTable.row.add([
+                            periodLabel,
+                            invoiceCount,
+                            formatRupiah(item.total),
+                            formatRupiah(pwAmount),
+                            formatRupiah(wpAmount)
+                        ]);
+                    });
+                    
+                    // Redraw the table
+                    pendapatanTable.draw();
+                    
+                    // Update footer totals
+                    document.getElementById('footerInvoice').textContent = totalInvoice;
+                    document.getElementById('footerPendapatan').textContent = formatRupiah(totalPendapatan);
+                    document.getElementById('footerPW').textContent = formatRupiah(pwTotal);
+                    document.getElementById('footerWP').textContent = formatRupiah(wpTotal);
+                    
+                    // Update summary cards
+                    document.getElementById('totalPendapatan').textContent = formatRupiah(totalPendapatan);
+                    
+                    const avgMonthly = periodCount > 0 ? totalPendapatan / (groupBy === 'monthly' ? periodCount : 
+                                       (groupBy === 'daily' ? periodCount / 30 : periodCount * 12)) : 0;
+                    document.getElementById('avgPerBulan').textContent = formatRupiah(avgMonthly);
+                    
+                    document.getElementById('totalInvoice').textContent = totalInvoice;
+                    
+                    // Create revenue chart
+                    createPendapatanChart(periods, values);
+                    
+                    // Create service breakdown chart
+                    createLayananChart(pwTotal, wpTotal);
+                    
+                    // Create top customers table
+                    createTopCustomersTable(totalPendapatan);
+                    
+                } catch (error) {
+                    console.error('Error loading pendapatan data:', error);
+                    showAlert('danger', 'Gagal memuat data pendapatan');
+                }
+            }
+            
+            // Create pendapatan chart
+            function createPendapatanChart(periods, values) {
+                const ctx = document.getElementById('pendapatanChart').getContext('2d');
+                
+                if (window.pendapatanChartInstance) {
+                    window.pendapatanChartInstance.destroy();
+                }
+                
+                window.pendapatanChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: periods,
+                        datasets: [{
+                            label: 'Pendapatan',
+                            data: values,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    callback: function(value) {
+                                        return formatRupiah(value);
+                                    }
+                                }
+                            }],
+                            xAxes: [{
+                                ticks: {
+                                    autoSkip: true,
+                                    maxTicksLimit: 15
+                                }
+                            }]
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return data.datasets[tooltipItem.datasetIndex].label + ': ' + formatRupiah(tooltipItem.yLabel);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Create layanan chart
+            function createLayananChart(pwTotal, wpTotal) {
+                const ctx = document.getElementById('layananChart').getContext('2d');
+                
+                if (window.layananChartInstance) {
+                    window.layananChartInstance.destroy();
+                }
+                
+                window.layananChartInstance = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Port to Warehouse', 'Warehouse to Port'],
+                        datasets: [{
+                            data: [pwTotal, wpTotal],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 99, 132, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    const value = data.datasets[0].data[tooltipItem.index];
+                                    const label = data.labels[tooltipItem.index];
+                                    const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${formatRupiah(value)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Create top customers table
+            function createTopCustomersTable(totalPendapatan) {
+                // For demonstration, generate 5 top customers
+                // In a real implementation, this data would come from the API
+                const dummyCustomers = [
+                    { name: 'PT Sukses Makmur', invoices: 15, amount: totalPendapatan * 0.25 },
+                    { name: 'PT Logistik Utama', invoices: 12, amount: totalPendapatan * 0.18 },
+                    { name: 'PT Sejahtera Express', invoices: 10, amount: totalPendapatan * 0.15 },
+                    { name: 'PT Global Cargo', invoices: 8, amount: totalPendapatan * 0.12 },
+                    { name: 'PT Transportasi Nusantara', invoices: 7, amount: totalPendapatan * 0.08 }
+                ];
+                
+                const topCustomersTable = document.getElementById('topCustomersTable');
+                topCustomersTable.innerHTML = '';
+                
+                dummyCustomers.forEach(customer => {
+                    const percentage = ((customer.amount / totalPendapatan) * 100).toFixed(1);
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${customer.name}</td>
+                        <td>${customer.invoices}</td>
+                        <td>${formatRupiah(customer.amount)}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: ${percentage}%"></div>
+                                </div>
+                                <span>${percentage}%</span>
+                            </div>
+                        </td>
+                    `;
+                    
+                    topCustomersTable.appendChild(row);
+                });
+            }
+            
+            // Function to export data to Excel
+            function exportToExcel() {
+                try {
+                    const startDate = document.getElementById('filterStartDate').value;
+                    const endDate = document.getElementById('filterEndDate').value;
+                    const groupBy = document.getElementById('filterGroupBy').value;
+                    
+                    // Create a new workbook
+                    const wb = XLSX.utils.book_new();
+                    
+                    // Extract data from DataTable
+                    const tableData = pendapatanTable.data().toArray();
+                    
+                    // Create headers
+                    const headers = ['Periode', 'Jumlah Invoice', 'Total Pendapatan', 'Port to Warehouse', 'Warehouse to Port'];
+                    
+                    // Clean data (remove HTML tags, convert currency to numbers)
+                    const cleanData = tableData.map(row => {
+                        return row.map(cell => {
+                            // Create a temporary div to parse HTML and get text content
+                            const div = document.createElement('div');
+                            div.innerHTML = cell;
+                            // For Rupiah values, remove the Rp prefix and dots
+                            let text = div.textContent || div.innerText || '';
+                            if (text.startsWith('Rp ')) {
+                                text = text.replace('Rp ', '').replace(/\./g, '');
+                            }
+                            return text;
+                        });
+                    });
+                    
+                    // Add headers to data
+                    const excelData = [headers, ...cleanData];
+                    
+                    // Get footer data and add as last row
+                    const footerData = [
+                        'Total',
+                        document.getElementById('footerInvoice').textContent,
+                        document.getElementById('footerPendapatan').textContent.replace('Rp ', '').replace(/\./g, ''),
+                        document.getElementById('footerPW').textContent.replace('Rp ', '').replace(/\./g, ''),
+                        document.getElementById('footerWP').textContent.replace('Rp ', '').replace(/\./g, '')
+                    ];
+                    
+                    excelData.push(footerData);
+                    
+                    // Create a worksheet
+                    const ws = XLSX.utils.aoa_to_sheet(excelData);
+                    
+                    // Add worksheet to workbook
+                    XLSX.utils.book_append_sheet(wb, ws, 'Laporan Pendapatan');
+                    
+                    // Generate Excel file
+                    const groupByText = groupBy === 'daily' ? 'Harian' : (groupBy === 'monthly' ? 'Bulanan' : 'Tahunan');
+                    XLSX.writeFile(wb, `Laporan_Pendapatan_${groupByText}_${startDate}_${endDate}.xlsx`);
+                    
+                } catch (error) {
+                    console.error('Error exporting to Excel:', error);
+                    showAlert('danger', 'Gagal mengekspor ke Excel');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Invoice - Sistem Manajemen Trucking</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar akan diload dengan JavaScript -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Navbar akan diload dengan JavaScript -->
+            <div id="navbar-container"></div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Daftar Invoice</h2>
+                    <a href="invoice-add.html" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Buat Invoice
+                    </a>
+                </div>
+
+                <!-- Filter Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Filter</h5>
+                        <form id="filterForm">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="filterStatus" class="form-label">Status</label>
+                                    <select class="form-select" id="filterStatus">
+                                        <option value="">Semua Status</option>
+                                        <option value="belum dibayar">Belum Dibayar</option>
+                                        <option value="dibayar sebagian">Dibayar Sebagian</option>
+                                        <option value="lunas">Lunas</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterPelanggan" class="form-label">Pelanggan</label>
+                                    <select class="form-select" id="filterPelanggan">
+                                        <option value="">Semua Pelanggan</option>
+                                        <!-- Opsi pelanggan akan diisi dengan JavaScript -->
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterStartDate" class="form-label">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="filterStartDate">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterEndDate" class="form-label">Tanggal Selesai</label>
+                                    <input type="date" class="form-control" id="filterEndDate">
+                                </div>
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" id="resetFilterButton" class="btn btn-outline-secondary me-2">Reset</button>
+                                    <button type="submit" class="btn btn-primary">Terapkan Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Invoice</h6>
+                                        <h3 class="fw-bold" id="totalInvoice">0</h3>
+                                    </div>
+                                    <div class="bg-primary text-white rounded p-3">
+                                        <i class='bx bxs-file-invoice fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Tagihan</h6>
+                                        <h3 class="fw-bold" id="totalTagihan">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-success text-white rounded p-3">
+                                        <i class='bx bxs-dollar-circle fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Belum Dibayar</h6>
+                                        <h3 class="fw-bold" id="totalBelumDibayar">Rp 0</h3>
+                                    </div>
+                                    <div class="bg-danger text-white rounded p-3">
+                                        <i class='bx bxs-time fs-3'></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table Card -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="invoiceTable" class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No. Invoice</th>
+                                        <th>Tanggal</th>
+                                        <th>Pelanggan</th>
+                                        <th>Total</th>
+                                        <th>Jatuh Tempo</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi dengan JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Update Status Pembayaran -->
+    <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Status Pembayaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStatusForm">
+                        <input type="hidden" id="updateInvoiceId">
+                        <div class="mb-3">
+                            <label for="updateInvoiceNumber" class="form-label">No. Invoice</label>
+                            <input type="text" class="form-control" id="updateInvoiceNumber" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateInvoiceAmount" class="form-label">Total Tagihan</label>
+                            <input type="text" class="form-control" id="updateInvoiceAmount" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateStatusPembayaran" class="form-label">Status Pembayaran</label>
+                            <select class="form-select" id="updateStatusPembayaran" required>
+                                <option value="">Pilih Status</option>
+                                <option value="belum dibayar">Belum Dibayar</option>
+                                <option value="dibayar sebagian">Dibayar Sebagian</option>
+                                <option value="lunas">Lunas</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateTanggalPembayaran" class="form-label">Tanggal Pembayaran</label>
+                            <input type="date" class="form-control" id="updateTanggalPembayaran" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateMetodePembayaran" class="form-label">Metode Pembayaran</label>
+                            <select class="form-select" id="updateMetodePembayaran" required>
+                                <option value="">Pilih Metode</option>
+                                <option value="transfer">Transfer Bank</option>
+                                <option value="tunai">Tunai</option>
+                                <option value="cek">Cek / Giro</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="updateStatusSubmitButton">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../assets/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load sidebar and navbar
+            $("#sidebar-container").load("../components/sidebar.html", function() {
+                // Aktifkan menu yang sedang aktif
+                const activeMenu = document.querySelector("#sidebar .components li a[href='invoice-list.html']");
+                if (activeMenu) {
+                    activeMenu.parentElement.classList.add("active");
+                    const parentCollapse = activeMenu.closest(".collapse");
+                    if (parentCollapse) {
+                        parentCollapse.classList.add("show");
+                        const parentToggle = document.querySelector(`[data-bs-target="#${parentCollapse.id}"]`);
+                        if (parentToggle) {
+                            parentToggle.setAttribute("aria-expanded", "true");
+                        }
+                    }
+                }
+            });
+            
+            $("#navbar-container").load("../components/navbar.html");
+            
+            // Check if user is logged in
+            checkUserLoggedIn();
+            
+            // Initialize DataTable
+            const invoiceTable = $('#invoiceTable').DataTable({
+                responsive: true,
+                order: [[1, 'desc']] // Sort by tanggal column descending
+            });
+            
+            // Load Pelanggan for filter
+            try {
+                const pelanggan = await window.api.getPelanggan();
+                const filterPelanggan = document.getElementById('filterPelanggan');
+                
+                pelanggan.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id;
+                    option.textContent = p.nama_perusahaan;
+                    filterPelanggan.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading pelanggan:', error);
+            }
+            
+            // Filter form handling
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await loadInvoiceData();
+            });
+            
+            // Reset filter button
+            document.getElementById('resetFilterButton').addEventListener('click', () => {
+                filterForm.reset();
+            });
+            
+            // Initial loading of invoice data
+            await loadInvoiceData();
+            
+            // Function to load invoice data with filters
+            async function loadInvoiceData() {
+                try {
+                    const filter = {
+                        status: document.getElementById('filterStatus').value,
+                        pelangganId: document.getElementById('filterPelanggan').value,
+                        startDate: document.getElementById('filterStartDate').value,
+                        endDate: document.getElementById('filterEndDate').value
+                    };
+                    
+                    const invoices = await window.api.getInvoices(filter);
+                    
+                    // Clear existing data
+                    invoiceTable.clear();
+                    
+                    // Calculate summary data
+                    let totalInvoice = invoices.length;
+                    let totalTagihan = 0;
+                    let totalBelumDibayar = 0;
+                    
+                    // Add new data
+                    invoices.forEach(invoice => {
+                        totalTagihan += invoice.grand_total;
+                        
+                        if (invoice.status_pembayaran === 'belum dibayar') {
+                            totalBelumDibayar += invoice.grand_total;
+                        } else if (invoice.status_pembayaran === 'dibayar sebagian') {
+                            // Anggap setengah dari grand_total yang belum dibayar
+                            totalBelumDibayar += invoice.grand_total / 2;
+                        }
+                        
+                        const actionsHtml = `
+                            <a href="invoice-detail.html?id=${invoice.id}" class="btn btn-sm btn-info me-1" title="Detail"><i class='bx bx-detail'></i></a>
+                            <button class="btn btn-sm btn-success me-1 btn-update-status" data-id="${invoice.id}" data-invoice="${invoice.nomor_invoice}" data-amount="${invoice.grand_total}" title="Update Status"><i class='bx bx-money'></i></button>
+                            <a href="#" class="btn btn-sm btn-primary me-1 btn-print" data-id="${invoice.id}" title="Cetak"><i class='bx bx-printer'></i></a>
+                        `;
+                        
+                        // Check if jatuh tempo expired
+                        let jatuhTempoClass = '';
+                        const today = new Date();
+                        const jatuhTempo = new Date(invoice.tanggal_jatuh_tempo);
+                        if (invoice.status_pembayaran !== 'lunas' && jatuhTempo < today) {
+                            jatuhTempoClass = 'text-danger fw-bold';
+                        }
+                        
+                        invoiceTable.row.add([
+                            `<a href="invoice-detail.html?id=${invoice.id}" class="text-decoration-none fw-bold">${invoice.nomor_invoice}</a>`,
+                            formatDateDisplay(invoice.tanggal_invoice),
+                            invoice.nama_perusahaan,
+                            formatRupiah(invoice.grand_total),
+                            `<span class="${jatuhTempoClass}">${formatDateDisplay(invoice.tanggal_jatuh_tempo)}</span>`,
+                            createStatusBadge(invoice.status_pembayaran),
+                            actionsHtml
+                        ]);
+                    });
+                    
+                    // Redraw the table
+                    invoiceTable.draw();
+                    
+                    // Update summary cards
+                    document.getElementById('totalInvoice').textContent = totalInvoice;
+                    document.getElementById('totalTagihan').textContent = formatRupiah(totalTagihan);
+                    document.getElementById('totalBelumDibayar').textContent = formatRupiah(totalBelumDibayar);
+                    
+                    // Setup action button event listeners
+                    setupActionButtonEventListeners();
+                } catch (error) {
+                    console.error('Error loading invoice data:', error);
+                    showAlert('danger', 'Gagal memuat data invoice');
+                }
+            }
+            
+            // Setup event listeners for dynamically created action buttons
+            function setupActionButtonEventListeners() {
+                // Update status button click
+                document.querySelectorAll('.btn-update-status').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const invoiceId = button.getAttribute('data-id');
+                        const invoiceNumber = button.getAttribute('data-invoice');
+                        const invoiceAmount = button.getAttribute('data-amount');
+                        
+                        document.getElementById('updateInvoiceId').value = invoiceId;
+                        document.getElementById('updateInvoiceNumber').value = invoiceNumber;
+                        document.getElementById('updateInvoiceAmount').value = formatRupiah(invoiceAmount);
+                        
+                        // Set default tanggal pembayaran to today
+                        document.getElementById('updateTanggalPembayaran').value = formatDateInput(new Date());
+                        
+                        // Show the modal
+                        const updateStatusModal = new bootstrap.Modal(document.getElementById('updateStatusModal'));
+                        updateStatusModal.show();
+                    });
+                });
+                
+                // Print button click
+                document.querySelectorAll('.btn-print').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const invoiceId = button.getAttribute('data-id');
+                        window.location.href = `invoice-print.html?id=${invoiceId}`;
+                    });
+                });
+            }
+            
+            // Handle update status form submission
+            document.getElementById('updateStatusSubmitButton').addEventListener('click', async () => {
+                const invoiceId = document.getElementById('updateInvoiceId').value;
+                const statusPembayaran = document.getElementById('updateStatusPembayaran').value;
+                const tanggalPembayaran = document.getElementById('updateTanggalPembayaran').value;
+                const metodePembayaran = document.getElementById('updateMetodePembayaran').value;
+                
+                if (!statusPembayaran || !tanggalPembayaran || !metodePembayaran) {
+                    alert('Silakan lengkapi semua field');
+                    return;
+                }
+                
+                try {
+                    await window.api.updateInvoiceStatus({
+                        id: invoiceId,
+                        status_pembayaran: statusPembayaran,
+                        tanggal_pembayaran: tanggalPembayaran,
+                        metode_pembayaran: metodePembayaran
+                    });
+                    
+                    // Close the modal
+                    bootstrap.Modal.getInstance(document.getElementById('updateStatusModal')).hide();
+                    
+                    // Reload invoice data
+                    await loadInvoiceData();
+                    
+                    showAlert('success', 'Status pembayaran berhasil diperbarui');
+                } catch (error) {
+                    console.error('Error updating invoice status:', error);
+                    showAlert('danger', 'Gagal memperbarui status pembayaran');
+                }
+            });
+        });
+    </script>
+</body>
+</html>/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets
